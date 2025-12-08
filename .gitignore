@@ -1,0 +1,34 @@
+# Ignore sensitive configuration
+config/
+credentials/
+*.env
+
+# Ignore output files (data should not be in repo)
+output/
+*.csv
+*.json
+
+# Ignore logs and temporary files
+logs/
+*.log
+*.tmp
+
+# Ignore PowerShell execution artifacts
+*.ps1xml
+
+# Ignore Windows system files
+Thumbs.db
+desktop.ini
+*.lnk
+
+# Ignore backup and temporary files
+*~
+*.bak
+*.swp
+*.orig
+
+# Ignore IDE files
+.vscode/
+.vs/
+*.suo
+*.user

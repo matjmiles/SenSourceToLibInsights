@@ -1,0 +1,17 @@
+Authentication via oAuth
+The LibApps v1.2 API uses oAuth 2.0 for authentication and supports the Client Credentials grant type.
+URL	Description
+POST
+oauth/token
+The endpoint used for requesting an access token for the client_credentials grant type.
+https://lgapi-us.libapps.com/1.2/oauth/token
+The following POST fields are required:
+client_id
+client_secret
+grant_type client_credentials
+Authorizing your API Requests
+Once you have an access token, send it via the Authorization header:
+POST /1.2/az/326762 HTTP/1.1
+Host: lgapi-us.libapps.com
+Authorization: Bearer ACCESSTOKEN
+name%3DAcademic%2BOneFile%26description%3DAcademic%2BOneFile%2Bis%2Bthe%2Bpremier%2Bsource%2Bfor%2Bpeer-reviewed%252C%2Bfull-text%2Barticles.
