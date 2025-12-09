@@ -4,27 +4,42 @@ This application extracts individual sensor traffic data from the VEA (Visitor E
 
 ## Quick Start
 
-1. **Install Prerequisites**
-   - Windows PowerShell 5.1 or higher
-   - Internet connection for VEA API access
-   - Valid VEA API credentials
+### Step 1: Clone and Setup
+```bash
+git clone https://github.com/matjmiles/SenSourceToLibInsights.git
+cd SenSourceToLibInsights
+```
 
-2. **Configure Credentials**
-   - Copy `config.example.ps1` to `config.ps1`
-   - Edit `config.ps1` and add your actual VEA API credentials
-   - Never commit `config.ps1` to git (it's ignored by default)
+### Step 2: Configure Credentials
+```batch
+setup.bat
+```
+This will:
+- Create `config.ps1` from the template
+- Prompt you to add your VEA API credentials
 
-3. **Run Export**
-   ```batch
-   run_export.bat
-   ```
-   The script will prompt you for:
-   - Start date (yyyy-mm-dd format)
-   - End date (yyyy-mm-dd format)
+**Required VEA API Credentials:**
+- Client ID
+- Client Secret  
+- Site ID
 
-4. **Import to Springshare**
-   - Use the CSV files from `output\csv\` folder
-   - Import each sensor CSV file separately in LibInsights
+### Step 3: Run Data Export
+```batch
+run_export.bat
+```
+The script will prompt you for:
+- Start date (yyyy-mm-dd format)
+- End date (yyyy-mm-dd format)
+
+### Step 4: Import to Springshare
+- Use the CSV files from `output\csv\` folder
+- Import each sensor CSV file separately in LibInsights
+
+## Prerequisites
+
+- Windows PowerShell 5.1 or higher
+- Internet connection for VEA API access
+- Valid VEA API credentials
 
 ## Project Structure
 

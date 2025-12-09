@@ -22,11 +22,18 @@ This guide walks you through installing and configuring the VEA to Springshare L
 
 ## Installation Steps
 
-### Step 1: Download the Application
+### Step 1: Clone the Repository
 
-1. Download or clone the VEA-Springshare pipeline to your local machine
-2. Extract to a folder like `C:\VEA-Springshare\`
-3. Ensure all files maintain their folder structure
+1. **Clone from GitHub**:
+   ```bash
+   git clone https://github.com/matjmiles/SenSourceToLibInsights.git
+   cd SenSourceToLibInsights
+   ```
+
+2. **Alternative - Download ZIP**:
+   - Download ZIP from GitHub repository
+   - Extract to a folder like `C:\VEA-Springshare\`
+   - Ensure all files maintain their folder structure
 
 ### Step 2: PowerShell Setup
 
@@ -46,13 +53,21 @@ This allows locally created scripts to run while maintaining security for downlo
 
 ### Step 3: Configure VEA API Credentials
 
-1. **Obtain VEA Credentials**:
+1. **Run Setup Script** (Recommended):
+   ```batch
+   setup.bat
+   ```
+   This will automatically create `config.ps1` from the template.
+
+2. **Manual Setup** (Alternative):
+   - Copy `config.example.ps1` to `config.ps1` in the project root
+   
+3. **Obtain VEA Credentials**:
    - Log into your VEA dashboard
    - Navigate to API settings or contact VEA support
    - Note your Client ID, Client Secret, and Site ID
 
-2. **Edit Configuration**:
-   - Copy `config.example.ps1` to `config.ps1` in the project root
+4. **Edit Configuration**:
    - Open `config.ps1` in a text editor
    - Replace the placeholder values with your actual VEA credentials:
    ```powershell
@@ -63,12 +78,13 @@ This allows locally created scripts to run while maintaining security for downlo
    ```
    - Save the file (it will be ignored by git for security)
 
-3. **Set Date Range** (Optional):
-   ```powershell
-   # Date Range Configuration
-   $StartDate = "2025-12-01T00:00:00Z"  # Adjust start date
-   $EndDate = "2025-12-08T23:59:59Z"    # Adjust end date
-   ```
+## Security Note
+
+**🔒 Your API credentials are secure:**
+- The `config.ps1` file is automatically ignored by git
+- Your credentials never get committed to the repository
+- Safe to clone, fork, or share the repository without exposing sensitive data
+- The `config.example.ps1` file shows the format but contains no real credentials
 
 ### Step 4: Test Installation
 
