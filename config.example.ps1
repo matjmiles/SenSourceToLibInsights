@@ -6,7 +6,7 @@ $ClientId = "your-client-id-here"
 $ClientSecret = "your-client-secret-here" 
 $SiteId = "your-site-id-here"
 
-# Example:
-# $ClientId = "f01cc7bb-e060-4965-bcda-612e2dc8d294"
-# $ClientSecret = "3b710165-fd3c-49a5-a869-4ed8a7eba99d"
-# $SiteId = "your-actual-site-id"
+# Example (replace with your actual VEA credentials):
+# $ClientId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+# $ClientSecret = "z9y8x7w6-v5u4-3210-zyxw-vu9876543210"
+# $SiteId = "library-main-building"
