@@ -1,12 +1,13 @@
 # Ignore sensitive configuration
-config/
-credentials/
-*.env
+config.ps1
+credentials.txt
+.env
 
-# Ignore output files (data should not be in repo)
-output/
-*.csv
-*.json
+# Ignore output data files (but allow folder structure)
+output/csv/*.csv
+output/json/*.json
+!output/csv/.gitkeep
+!output/json/.gitkeep
 
 # Ignore logs and temporary files
 logs/

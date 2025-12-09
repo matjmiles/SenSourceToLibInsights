@@ -52,15 +52,16 @@ This allows locally created scripts to run while maintaining security for downlo
    - Note your Client ID, Client Secret, and Site ID
 
 2. **Edit Configuration**:
-   - Open `scripts\VEA-Zone-Extractor.ps1` in a text editor
-   - Find the configuration section at the top:
+   - Copy `config.example.ps1` to `config.ps1` in the project root
+   - Open `config.ps1` in a text editor
+   - Replace the placeholder values with your actual VEA credentials:
    ```powershell
-   # VEA API Configuration - UPDATE THESE VALUES
-   $ClientId = "your-client-id-here"
-   $ClientSecret = "your-client-secret-here" 
-   $SiteId = "your-site-id-here"
+   # VEA API Configuration
+   $ClientId = "your-actual-client-id"
+   $ClientSecret = "your-actual-client-secret" 
+   $SiteId = "your-actual-site-id"
    ```
-   - Replace the placeholder values with your actual credentials
+   - Save the file (it will be ignored by git for security)
 
 3. **Set Date Range** (Optional):
    ```powershell

@@ -1,0 +1,847 @@
+﻿{
+    "messages":  [
+
+                 ],
+    "results":  [
+                    {
+                        "recordDate_hour_1":  "2025-12-01T05:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T06:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T07:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T08:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T10:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T11:00:00.000Z",
+                        "sumins":  17,
+                        "sumouts":  7
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T12:00:00.000Z",
+                        "sumins":  2,
+                        "sumouts":  3
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T13:00:00.000Z",
+                        "sumins":  27,
+                        "sumouts":  22
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T14:00:00.000Z",
+                        "sumins":  103,
+                        "sumouts":  59
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T15:00:00.000Z",
+                        "sumins":  258,
+                        "sumouts":  140
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T16:00:00.000Z",
+                        "sumins":  282,
+                        "sumouts":  199
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T17:00:00.000Z",
+                        "sumins":  530,
+                        "sumouts":  391
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T18:00:00.000Z",
+                        "sumins":  712,
+                        "sumouts":  557
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T19:00:00.000Z",
+                        "sumins":  688,
+                        "sumouts":  636
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T20:00:00.000Z",
+                        "sumins":  707,
+                        "sumouts":  712
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T21:00:00.000Z",
+                        "sumins":  573,
+                        "sumouts":  592
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T22:00:00.000Z",
+                        "sumins":  722,
+                        "sumouts":  688
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-01T23:00:00.000Z",
+                        "sumins":  551,
+                        "sumouts":  625
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T00:00:00.000Z",
+                        "sumins":  412,
+                        "sumouts":  530
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T01:00:00.000Z",
+                        "sumins":  305,
+                        "sumouts":  387
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T02:00:00.000Z",
+                        "sumins":  237,
+                        "sumouts":  292
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T03:00:00.000Z",
+                        "sumins":  182,
+                        "sumouts":  233
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T04:00:00.000Z",
+                        "sumins":  75,
+                        "sumouts":  130
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T05:00:00.000Z",
+                        "sumins":  65,
+                        "sumouts":  112
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T06:00:00.000Z",
+                        "sumins":  44,
+                        "sumouts":  106
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T07:00:00.000Z",
+                        "sumins":  8,
+                        "sumouts":  21
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T08:00:00.000Z",
+                        "sumins":  4,
+                        "sumouts":  29
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T10:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  1
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T11:00:00.000Z",
+                        "sumins":  13,
+                        "sumouts":  5
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T12:00:00.000Z",
+                        "sumins":  6,
+                        "sumouts":  6
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T13:00:00.000Z",
+                        "sumins":  16,
+                        "sumouts":  7
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T14:00:00.000Z",
+                        "sumins":  141,
+                        "sumouts":  80
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T15:00:00.000Z",
+                        "sumins":  225,
+                        "sumouts":  127
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T16:00:00.000Z",
+                        "sumins":  351,
+                        "sumouts":  220
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T17:00:00.000Z",
+                        "sumins":  486,
+                        "sumouts":  394
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T18:00:00.000Z",
+                        "sumins":  286,
+                        "sumouts":  553
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T19:00:00.000Z",
+                        "sumins":  810,
+                        "sumouts":  433
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T20:00:00.000Z",
+                        "sumins":  463,
+                        "sumouts":  536
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T21:00:00.000Z",
+                        "sumins":  696,
+                        "sumouts":  523
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T22:00:00.000Z",
+                        "sumins":  676,
+                        "sumouts":  609
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-02T23:00:00.000Z",
+                        "sumins":  603,
+                        "sumouts":  695
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T00:00:00.000Z",
+                        "sumins":  465,
+                        "sumouts":  513
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T01:00:00.000Z",
+                        "sumins":  363,
+                        "sumouts":  450
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T02:00:00.000Z",
+                        "sumins":  240,
+                        "sumouts":  331
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T03:00:00.000Z",
+                        "sumins":  153,
+                        "sumouts":  225
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T04:00:00.000Z",
+                        "sumins":  110,
+                        "sumouts":  160
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T05:00:00.000Z",
+                        "sumins":  75,
+                        "sumouts":  133
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T06:00:00.000Z",
+                        "sumins":  59,
+                        "sumouts":  91
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T07:00:00.000Z",
+                        "sumins":  11,
+                        "sumouts":  31
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T08:00:00.000Z",
+                        "sumins":  8,
+                        "sumouts":  34
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T10:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T11:00:00.000Z",
+                        "sumins":  11,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T12:00:00.000Z",
+                        "sumins":  10,
+                        "sumouts":  9
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T13:00:00.000Z",
+                        "sumins":  28,
+                        "sumouts":  26
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T14:00:00.000Z",
+                        "sumins":  98,
+                        "sumouts":  68
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T15:00:00.000Z",
+                        "sumins":  264,
+                        "sumouts":  140
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T16:00:00.000Z",
+                        "sumins":  320,
+                        "sumouts":  190
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T17:00:00.000Z",
+                        "sumins":  595,
+                        "sumouts":  421
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T18:00:00.000Z",
+                        "sumins":  687,
+                        "sumouts":  606
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T19:00:00.000Z",
+                        "sumins":  792,
+                        "sumouts":  683
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T20:00:00.000Z",
+                        "sumins":  867,
+                        "sumouts":  782
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T21:00:00.000Z",
+                        "sumins":  700,
+                        "sumouts":  737
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T22:00:00.000Z",
+                        "sumins":  845,
+                        "sumouts":  847
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-03T23:00:00.000Z",
+                        "sumins":  683,
+                        "sumouts":  754
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T00:00:00.000Z",
+                        "sumins":  584,
+                        "sumouts":  666
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T01:00:00.000Z",
+                        "sumins":  373,
+                        "sumouts":  480
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T02:00:00.000Z",
+                        "sumins":  266,
+                        "sumouts":  370
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T03:00:00.000Z",
+                        "sumins":  185,
+                        "sumouts":  261
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T04:00:00.000Z",
+                        "sumins":  122,
+                        "sumouts":  188
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T05:00:00.000Z",
+                        "sumins":  80,
+                        "sumouts":  140
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T06:00:00.000Z",
+                        "sumins":  54,
+                        "sumouts":  123
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T07:00:00.000Z",
+                        "sumins":  8,
+                        "sumouts":  25
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T08:00:00.000Z",
+                        "sumins":  2,
+                        "sumouts":  21
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T10:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T11:00:00.000Z",
+                        "sumins":  12,
+                        "sumouts":  1
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T12:00:00.000Z",
+                        "sumins":  14,
+                        "sumouts":  15
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T13:00:00.000Z",
+                        "sumins":  25,
+                        "sumouts":  23
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T14:00:00.000Z",
+                        "sumins":  122,
+                        "sumouts":  72
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T15:00:00.000Z",
+                        "sumins":  246,
+                        "sumouts":  120
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T16:00:00.000Z",
+                        "sumins":  314,
+                        "sumouts":  194
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T17:00:00.000Z",
+                        "sumins":  549,
+                        "sumouts":  400
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T18:00:00.000Z",
+                        "sumins":  775,
+                        "sumouts":  612
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T19:00:00.000Z",
+                        "sumins":  698,
+                        "sumouts":  745
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T20:00:00.000Z",
+                        "sumins":  687,
+                        "sumouts":  587
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T21:00:00.000Z",
+                        "sumins":  765,
+                        "sumouts":  762
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T22:00:00.000Z",
+                        "sumins":  758,
+                        "sumouts":  718
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-04T23:00:00.000Z",
+                        "sumins":  723,
+                        "sumouts":  724
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T00:00:00.000Z",
+                        "sumins":  532,
+                        "sumouts":  675
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T01:00:00.000Z",
+                        "sumins":  370,
+                        "sumouts":  454
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T02:00:00.000Z",
+                        "sumins":  236,
+                        "sumouts":  382
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T03:00:00.000Z",
+                        "sumins":  146,
+                        "sumouts":  194
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T04:00:00.000Z",
+                        "sumins":  113,
+                        "sumouts":  157
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T05:00:00.000Z",
+                        "sumins":  77,
+                        "sumouts":  126
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T06:00:00.000Z",
+                        "sumins":  50,
+                        "sumouts":  104
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T07:00:00.000Z",
+                        "sumins":  13,
+                        "sumouts":  40
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T08:00:00.000Z",
+                        "sumins":  2,
+                        "sumouts":  25
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T10:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T11:00:00.000Z",
+                        "sumins":  14,
+                        "sumouts":  2
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T12:00:00.000Z",
+                        "sumins":  7,
+                        "sumouts":  8
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T13:00:00.000Z",
+                        "sumins":  27,
+                        "sumouts":  21
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T14:00:00.000Z",
+                        "sumins":  85,
+                        "sumouts":  50
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T15:00:00.000Z",
+                        "sumins":  242,
+                        "sumouts":  119
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T16:00:00.000Z",
+                        "sumins":  322,
+                        "sumouts":  201
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T17:00:00.000Z",
+                        "sumins":  576,
+                        "sumouts":  423
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T18:00:00.000Z",
+                        "sumins":  680,
+                        "sumouts":  618
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T19:00:00.000Z",
+                        "sumins":  678,
+                        "sumouts":  619
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T20:00:00.000Z",
+                        "sumins":  747,
+                        "sumouts":  668
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T21:00:00.000Z",
+                        "sumins":  669,
+                        "sumouts":  691
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T22:00:00.000Z",
+                        "sumins":  722,
+                        "sumouts":  694
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-05T23:00:00.000Z",
+                        "sumins":  587,
+                        "sumouts":  674
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T00:00:00.000Z",
+                        "sumins":  368,
+                        "sumouts":  515
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T01:00:00.000Z",
+                        "sumins":  296,
+                        "sumouts":  396
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T02:00:00.000Z",
+                        "sumins":  191,
+                        "sumouts":  254
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T03:00:00.000Z",
+                        "sumins":  114,
+                        "sumouts":  222
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T04:00:00.000Z",
+                        "sumins":  41,
+                        "sumouts":  97
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T05:00:00.000Z",
+                        "sumins":  13,
+                        "sumouts":  86
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T06:00:00.000Z",
+                        "sumins":  3,
+                        "sumouts":  6
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T07:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  1
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T08:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  1
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T10:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T11:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T12:00:00.000Z",
+                        "sumins":  8,
+                        "sumouts":  4
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T13:00:00.000Z",
+                        "sumins":  4,
+                        "sumouts":  2
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T14:00:00.000Z",
+                        "sumins":  4,
+                        "sumouts":  2
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T15:00:00.000Z",
+                        "sumins":  8,
+                        "sumouts":  6
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T16:00:00.000Z",
+                        "sumins":  123,
+                        "sumouts":  57
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T17:00:00.000Z",
+                        "sumins":  143,
+                        "sumouts":  81
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T18:00:00.000Z",
+                        "sumins":  228,
+                        "sumouts":  136
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T19:00:00.000Z",
+                        "sumins":  285,
+                        "sumouts":  233
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T20:00:00.000Z",
+                        "sumins":  275,
+                        "sumouts":  264
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T21:00:00.000Z",
+                        "sumins":  287,
+                        "sumouts":  265
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T22:00:00.000Z",
+                        "sumins":  295,
+                        "sumouts":  273
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-06T23:00:00.000Z",
+                        "sumins":  261,
+                        "sumouts":  266
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T00:00:00.000Z",
+                        "sumins":  249,
+                        "sumouts":  271
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T01:00:00.000Z",
+                        "sumins":  169,
+                        "sumouts":  256
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T02:00:00.000Z",
+                        "sumins":  131,
+                        "sumouts":  193
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T03:00:00.000Z",
+                        "sumins":  100,
+                        "sumouts":  149
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T04:00:00.000Z",
+                        "sumins":  36,
+                        "sumouts":  76
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T05:00:00.000Z",
+                        "sumins":  15,
+                        "sumouts":  73
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T06:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  3
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T07:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T08:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T09:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T10:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T11:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T12:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T13:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T14:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  1
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T15:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T16:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  2
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T17:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T18:00:00.000Z",
+                        "sumins":  2,
+                        "sumouts":  4
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T19:00:00.000Z",
+                        "sumins":  4,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T20:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  3
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T21:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T22:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-07T23:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-08T00:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-08T01:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-08T02:00:00.000Z",
+                        "sumins":  0,
+                        "sumouts":  0
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-08T03:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  2
+                    },
+                    {
+                        "recordDate_hour_1":  "2025-12-08T04:00:00.000Z",
+                        "sumins":  1,
+                        "sumouts":  0
+                    }
+                ]
+}

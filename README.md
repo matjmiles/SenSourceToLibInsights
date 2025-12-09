@@ -10,8 +10,9 @@ This application extracts individual sensor traffic data from the VEA (Visitor E
    - Valid VEA API credentials
 
 2. **Configure Credentials**
-   - Edit `scripts\VEA-Zone-Extractor.ps1`
-   - Update the `$ClientId`, `$ClientSecret`, and `$SiteId` variables with your VEA credentials
+   - Copy `config.example.ps1` to `config.ps1`
+   - Edit `config.ps1` and add your actual VEA API credentials
+   - Never commit `config.ps1` to git (it's ignored by default)
 
 3. **Run Export**
    ```batch

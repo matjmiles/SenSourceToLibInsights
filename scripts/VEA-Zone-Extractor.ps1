@@ -6,9 +6,16 @@ param(
     [string]$GateMethod = "Bidirectional"
 )
 
-# VEA API Configuration
-$ClientId = "f01cc7bb-e060-4965-bcda-612e2dc8d294"
-$ClientSecret = "3b710165-fd3c-49a5-a869-4ed8a7eba99d"
+# VEA API Configuration - Load from external config file
+$ConfigPath = Join-Path $PSScriptRoot "..\config.ps1"
+if (Test-Path $ConfigPath) {
+    . $ConfigPath
+} else {
+    Write-Error "Configuration file not found: $ConfigPath"
+    Write-Host "Please create config.ps1 with your VEA API credentials. See config.example.ps1 for template."
+    exit 1
+}
+
 $AuthUrl = "https://auth.sensourceinc.com/oauth/token"
 $ApiBaseUrl = "https://vea.sensourceinc.com/api"
 
