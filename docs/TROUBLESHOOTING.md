@@ -50,8 +50,7 @@ powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"
    ```powershell
    # Verify credentials in config.ps1
    $ClientId = "correct-client-id"
-   $ClientSecret = "correct-client-secret" 
-   $SiteId = "correct-site-id"
+   $ClientSecret = "correct-client-secret"
    ```
 
 2. **Expired Credentials**:

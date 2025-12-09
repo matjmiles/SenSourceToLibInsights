@@ -27,8 +27,7 @@ if exist "config.ps1" (
     echo.
     echo Your credentials are needed:
     echo - Client ID
-    echo - Client Secret  
-    echo - Site ID
+    echo - Client Secret
     echo.
     echo After editing config.ps1, run: run_export.bat
 )

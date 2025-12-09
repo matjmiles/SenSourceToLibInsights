@@ -13,7 +13,7 @@ This guide walks you through installing and configuring the VEA to Springshare L
 ### VEA API Requirements
 - Valid VEA account with API access
 - API Client ID and Client Secret
-- Site ID for your location
+
 - Active sensors configured in VEA system
 
 ### Springshare Requirements
@@ -65,7 +65,7 @@ This allows locally created scripts to run while maintaining security for downlo
 3. **Obtain VEA Credentials**:
    - Log into your VEA dashboard
    - Navigate to API settings or contact VEA support
-   - Note your Client ID, Client Secret, and Site ID
+   - Note your Client ID and Client Secret
 
 4. **Edit Configuration**:
    - Open `config.ps1` in a text editor
@@ -73,8 +73,7 @@ This allows locally created scripts to run while maintaining security for downlo
    ```powershell
    # VEA API Configuration
    $ClientId = "your-actual-client-id"
-   $ClientSecret = "your-actual-client-secret" 
-   $SiteId = "your-actual-site-id"
+   $ClientSecret = "your-actual-client-secret"
    ```
    - Save the file (it will be ignored by git for security)
 

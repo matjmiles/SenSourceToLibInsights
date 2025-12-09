@@ -20,8 +20,7 @@ This will:
 
 **Required VEA API Credentials:**
 - Client ID
-- Client Secret  
-- Site ID
+- Client Secret
 
 ### Step 3: Run Data Export
 ```batch

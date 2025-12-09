@@ -18,18 +18,17 @@ This document explains how each script works in the VEA to Springshare data pipe
 **Key Parameters**:
 - `$ClientId` - Your VEA API client ID
 - `$ClientSecret` - Your VEA API client secret  
-- `$SiteId` - Your VEA site identifier
+
 - `$StartDate` - Data extraction start date (ISO-8601 format)
 - `$EndDate` - Data extraction end date (ISO-8601 format)
 
 **Configuration**:
 ```powershell
-# Edit these variables in the script
+# Edit these variables in the config.ps1 file
 $ClientId = "your-client-id"
 $ClientSecret = "your-client-secret"
-$SiteId = "your-site-id"
-$StartDate = "2025-12-01T00:00:00Z"
-$EndDate = "2025-12-08T23:59:59Z"
+$StartDate = "2025-12-01T00:00:00Z"  # Configured in script
+$EndDate = "2025-12-08T23:59:59Z"    # Configured in script
 ```
 
 **Output Files**:
