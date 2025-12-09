@@ -3,6 +3,9 @@ param(
     [string]$GateMethod = "Bidirectional"
 )
 
+# Suppress non-critical errors for better user experience
+$ErrorActionPreference = "SilentlyContinue"
+
 Write-Host "VEA Individual Sensor CSV Generator" -ForegroundColor Green
 Write-Host "Processing all zone JSON files to create individual sensor CSVs" -ForegroundColor Cyan
 Write-Host "Gate Method: $GateMethod" -ForegroundColor Cyan
@@ -103,9 +106,14 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         
         $CreatedFiles += $CsvFile
         
-        # Calculate totals
-        $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum).Sum
-        $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum).Sum
+        # Calculate totals (with error suppression)
+        try {
+            $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum -ErrorAction SilentlyContinue).Sum
+            $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum -ErrorAction SilentlyContinue).Sum
+        } catch {
+            $TotalEntries = "N/A"
+            $TotalExits = "N/A"
+        }
         
         Write-Host "  Created: $CsvFile" -ForegroundColor Green
         

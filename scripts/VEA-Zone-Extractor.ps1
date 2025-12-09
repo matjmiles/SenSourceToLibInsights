@@ -6,6 +6,9 @@ param(
     [string]$GateMethod = "Bidirectional"
 )
 
+# Suppress non-critical errors to avoid confusing end users
+$ErrorActionPreference = "Continue"
+
 # VEA API Configuration - Load from external config file
 $ConfigPath = Join-Path $PSScriptRoot "..\config.ps1"
 if (Test-Path $ConfigPath) {
@@ -225,9 +228,14 @@ function Create-ZoneSpringshareCSV {
 
     Write-Host "  Created CSV: $CsvFile" -ForegroundColor Green
     
-    # Show summary
-    $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum).Sum
-    $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum).Sum
+    # Show summary (with error suppression)
+    try {
+        $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum -ErrorAction SilentlyContinue).Sum
+        $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum -ErrorAction SilentlyContinue).Sum
+    } catch {
+        $TotalEntries = "N/A"
+        $TotalExits = "N/A"
+    }
     
     if ($GateMethod.ToLower() -ne "manual") {
         Write-Host "     $($DailyTotals.Count) days | Entries: $TotalEntries | Exits: $TotalExits" -ForegroundColor Gray
