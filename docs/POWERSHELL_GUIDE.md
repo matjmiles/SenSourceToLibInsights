@@ -1,6 +1,6 @@
 # PowerShell Guide for VEA-Springshare Scripts
 
-This guide explains the PowerShell commands and concepts used in the VEA to Springshare data pipeline scripts. It's designed for users who may not be familiar with PowerShell scripting.
+This guides explains the PowerShell commands and concepts used in the VEA to Springshare data pipeline scripts. It's designed for users who may not be familiar with PowerShell scripting.
 
 ## Table of Contents
 - [PowerShell Basics](#powershell-basics)
