@@ -4,7 +4,26 @@ This guide helps resolve common issues with the VEA to Springshare data pipeline
 
 ## Common Issues and Solutions
 
-### 1. PowerShell Execution Issues
+### 1. Configuration Issues
+
+#### "Configuration file not found: config.ps1"
+**Cause**: Missing configuration file with API credentials
+**Solution**:
+1. Run `setup.bat` to create config.ps1 from template
+2. Or manually copy `config.example.ps1` to `config.ps1`
+3. Edit `config.ps1` with your actual VEA API credentials
+
+#### "Cannot find config.ps1" when running scripts
+**Cause**: Configuration file not in correct location
+**Solution**:
+```powershell
+# Verify config.ps1 exists in project root
+ls config.ps1
+# If not found, create from template
+copy config.example.ps1 config.ps1
+```
+
+### 2. PowerShell Execution Issues
 
 #### "Execution of scripts is disabled on this system"
 **Cause**: PowerShell execution policy restricts script execution
@@ -29,7 +48,7 @@ powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"
 
 1. **Invalid Credentials**:
    ```powershell
-   # Verify credentials in VEA-Zone-Extractor.ps1
+   # Verify credentials in config.ps1
    $ClientId = "correct-client-id"
    $ClientSecret = "correct-client-secret" 
    $SiteId = "correct-site-id"
