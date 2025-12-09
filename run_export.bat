@@ -72,6 +72,6 @@ echo.
 echo These files are ready for Springshare LibInsights import!
 echo.
 echo Files created:
-dir "output\csv\*individual_springshare_import.csv" /b
+powershell -Command "Get-ChildItem 'output\csv\*individual_springshare_import.csv' | Measure-Object | Select-Object -ExpandProperty Count"
 echo.
 pause
