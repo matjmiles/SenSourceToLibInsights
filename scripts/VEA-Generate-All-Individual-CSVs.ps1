@@ -52,50 +52,46 @@ foreach ($jsonFile in $ZoneJsonFiles) {
             continue
         }
         
-        # Group by date and aggregate
-        $DailyTotals = @{}
+        # Keep hourly data instead of aggregating to daily
+        $HourlyData = @{}
         
         foreach ($record in $ZoneSpecificResults) {
             if ($record.recordDate_hour_1) {
                 $DateTime = [DateTime]$record.recordDate_hour_1
-                $DateKey = $DateTime.ToString("yyyy-MM-dd")
+                $HourKey = $DateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 
-                if (-not $DailyTotals.ContainsKey($DateKey)) {
-                    $DailyTotals[$DateKey] = @{
-                        Entries = 0
-                        Exits = 0
-                    }
+                $HourlyData[$HourKey] = @{
+                    DateTime = $DateTime
+                    Entries = [int]$record.sumins
+                    Exits = [int]$record.sumouts
                 }
-                
-                $DailyTotals[$DateKey].Entries += [int]$record.sumins
-                $DailyTotals[$DateKey].Exits += [int]$record.sumouts
             }
         }
         
-        if ($DailyTotals.Count -eq 0) {
-            Write-Host "  No daily data - skipping" -ForegroundColor Yellow
+        if ($HourlyData.Count -eq 0) {
+            Write-Host "  No hourly data - skipping" -ForegroundColor Yellow
             continue
         }
         
-        # Create Springshare CSV
+        # Create Springshare CSV with hourly data
         $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
         $CsvFile = "${SafeName}_individual_springshare_import.csv"
         
         $CsvLines = @("date,gate_start,gate_end")
         
-        foreach ($date in $DailyTotals.Keys | Sort-Object) {
-            $totals = $DailyTotals[$date]
+        foreach ($hourKey in $HourlyData.Keys | Sort-Object) {
+            $hourData = $HourlyData[$hourKey]
             
             switch ($GateMethod.ToLower()) {
                 "bidirectional" {
-                    $CsvLines += "$date,$($totals.Entries),$($totals.Exits)"
+                    $CsvLines += "$hourKey,$($hourData.Entries),$($hourData.Exits)"
                 }
                 "manual" {
-                    $total = $totals.Entries + $totals.Exits
-                    $CsvLines += "$date,$total,"
+                    $total = $hourData.Entries + $hourData.Exits
+                    $CsvLines += "$hourKey,$total,"
                 }
                 default {
-                    $CsvLines += "$date,$($totals.Entries),$($totals.Exits)"
+                    $CsvLines += "$hourKey,$($hourData.Entries),$($hourData.Exits)"
                 }
             }
         }
@@ -108,8 +104,8 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         
         # Calculate totals (with error suppression)
         try {
-            $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum -ErrorAction SilentlyContinue).Sum
-            $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum -ErrorAction SilentlyContinue).Sum
+            $TotalEntries = ($HourlyData.Values | Measure-Object -Property Entries -Sum -ErrorAction SilentlyContinue).Sum
+            $TotalExits = ($HourlyData.Values | Measure-Object -Property Exits -Sum -ErrorAction SilentlyContinue).Sum
         } catch {
             $TotalEntries = "N/A"
             $TotalExits = "N/A"
@@ -118,10 +114,10 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         Write-Host "  Created: $CsvFile" -ForegroundColor Green
         
         if ($GateMethod.ToLower() -ne "manual") {
-            Write-Host "  Summary: $($DailyTotals.Count) days | Entries: $TotalEntries | Exits: $TotalExits" -ForegroundColor Gray
+            Write-Host "  Summary: $($HourlyData.Count) hours | Entries: $TotalEntries | Exits: $TotalExits" -ForegroundColor Gray
         } else {
             $TotalCount = $TotalEntries + $TotalExits
-            Write-Host "  Summary: $($DailyTotals.Count) days | Total Count: $TotalCount" -ForegroundColor Gray
+            Write-Host "  Summary: $($HourlyData.Count) hours | Total Count: $TotalCount" -ForegroundColor Gray
         }
         
     }
