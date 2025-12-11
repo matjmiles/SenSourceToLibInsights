@@ -60,7 +60,7 @@ foreach ($jsonFile in $ZoneJsonFiles) {
                 # Convert UTC timestamp to local timezone
                 $UtcDateTime = [DateTime]::Parse($record.recordDate_hour_1)
                 $LocalDateTime = $UtcDateTime.ToLocalTime()
-                $HourKey = $LocalDateTime.ToString("MM/dd/yyyy HH:mm")
+                $HourKey = $LocalDateTime.ToString("yyyy-MM-dd HH:mm")
                 
                 $HourlyData[$HourKey] = @{
                     DateTime = $LocalDateTime
@@ -79,21 +79,23 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
         $CsvFile = "${SafeName}_individual_springshare_import.csv"
         
-        $CsvLines = @("date,gate_start,gate_end")
+        $CsvLines = @("date,time,gate_start,gate_end")
         
         foreach ($hourKey in $HourlyData.Keys | Sort-Object) {
             $hourData = $HourlyData[$hourKey]
+            $dateOnly = $hourData.DateTime.ToString("yyyy-MM-dd")
+            $timeOnly = $hourData.DateTime.ToString("HH:mm")
             
             switch ($GateMethod.ToLower()) {
                 "bidirectional" {
-                    $CsvLines += "$hourKey,$($hourData.Entries),$($hourData.Exits)"
+                    $CsvLines += "$dateOnly,$timeOnly,$($hourData.Entries),$($hourData.Exits)"
                 }
                 "manual" {
                     $total = $hourData.Entries + $hourData.Exits
-                    $CsvLines += "$hourKey,$total,"
+                    $CsvLines += "$dateOnly,$timeOnly,$total,"
                 }
                 default {
-                    $CsvLines += "$hourKey,$($hourData.Entries),$($hourData.Exits)"
+                    $CsvLines += "$dateOnly,$timeOnly,$($hourData.Entries),$($hourData.Exits)"
                 }
             }
         }
