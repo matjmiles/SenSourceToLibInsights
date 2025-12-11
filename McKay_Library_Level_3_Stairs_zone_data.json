@@ -1,7 +1,7 @@
 ﻿{
     "zone_info":  {
                       "zone_id":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
-                      "extraction_timestamp":  "2025-12-10 15:44:18",
+                      "extraction_timestamp":  "2025-12-10 15:55:51",
                       "sensor_name":  "McKay Library Level 3 Stairs"
                   },
     "raw_data":  {
@@ -41824,15 +41824,15 @@
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  46,
-                                         "sumouts":  48
+                                         "sumins":  55,
+                                         "sumouts":  52
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  209,
-                                         "sumouts":  169
+                                         "sumins":  244,
+                                         "sumouts":  199
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
@@ -41845,15 +41845,15 @@
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  164,
-                                         "sumouts":  134
+                                         "sumins":  198,
+                                         "sumouts":  183
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  112,
-                                         "sumouts":  116
+                                         "sumins":  129,
+                                         "sumouts":  134
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",

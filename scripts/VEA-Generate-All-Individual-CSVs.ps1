@@ -57,11 +57,13 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         
         foreach ($record in $ZoneSpecificResults) {
             if ($record.recordDate_hour_1) {
-                $DateTime = [DateTime]$record.recordDate_hour_1
-                $HourKey = $DateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                # Convert UTC timestamp to local timezone
+                $UtcDateTime = [DateTime]::Parse($record.recordDate_hour_1)
+                $LocalDateTime = $UtcDateTime.ToLocalTime()
+                $HourKey = $LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss")
                 
                 $HourlyData[$HourKey] = @{
-                    DateTime = $DateTime
+                    DateTime = $LocalDateTime
                     Entries = [int]$record.sumins
                     Exits = [int]$record.sumouts
                 }
