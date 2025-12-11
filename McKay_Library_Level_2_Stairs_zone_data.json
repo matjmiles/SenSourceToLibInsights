@@ -1,7 +1,7 @@
 ﻿{
     "zone_info":  {
                       "zone_id":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
-                      "extraction_timestamp":  "2025-12-10 15:55:53",
+                      "extraction_timestamp":  "2025-12-11 09:56:46",
                       "sensor_name":  "McKay Library Level 2 Stairs"
                   },
     "raw_data":  {
@@ -41824,15 +41824,15 @@
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  55,
-                                         "sumouts":  52
+                                         "sumins":  59,
+                                         "sumouts":  58
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  244,
-                                         "sumouts":  199
+                                         "sumins":  263,
+                                         "sumouts":  213
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
@@ -41845,15 +41845,29 @@
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  198,
-                                         "sumouts":  183
+                                         "sumins":  208,
+                                         "sumouts":  200
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T22:00:00.000Z",
                                          "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
                                          "name":  "Person count in/out 1",
-                                         "sumins":  129,
-                                         "sumouts":  134
+                                         "sumins":  137,
+                                         "sumouts":  144
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  53,
+                                         "sumouts":  51
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  248,
+                                         "sumouts":  177
                                      },
                                      {
                                          "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",
@@ -41861,6 +41875,629 @@
                                          "name":  "Person count in/out 1",
                                          "sumins":  136,
                                          "sumouts":  171
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  177,
+                                         "sumouts":  173
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-10T23:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  126,
+                                         "sumouts":  165
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T00:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  45,
+                                         "sumouts":  45
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T00:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  177,
+                                         "sumouts":  145
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T00:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  171,
+                                         "sumouts":  179
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T00:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  110,
+                                         "sumouts":  183
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T00:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  92,
+                                         "sumouts":  171
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T01:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  26,
+                                         "sumouts":  31
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T01:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  134,
+                                         "sumouts":  89
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T01:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  140,
+                                         "sumouts":  151
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T01:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  60,
+                                         "sumouts":  106
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T01:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  64,
+                                         "sumouts":  124
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T02:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  24,
+                                         "sumouts":  29
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T02:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  98,
+                                         "sumouts":  52
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T02:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  114,
+                                         "sumouts":  162
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T02:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  18,
+                                         "sumouts":  67
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T02:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  45,
+                                         "sumouts":  108
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T03:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  19,
+                                         "sumouts":  25
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T03:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  53,
+                                         "sumouts":  55
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T03:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  83,
+                                         "sumouts":  114
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T03:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  20,
+                                         "sumouts":  33
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T03:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  43,
+                                         "sumouts":  67
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T04:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  12,
+                                         "sumouts":  19
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T04:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  58,
+                                         "sumouts":  40
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T04:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  61,
+                                         "sumouts":  85
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T04:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  9,
+                                         "sumouts":  19
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T04:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  18,
+                                         "sumouts":  67
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T05:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  2,
+                                         "sumouts":  9
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T05:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  29,
+                                         "sumouts":  16
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T05:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  35,
+                                         "sumouts":  64
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T05:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  3,
+                                         "sumouts":  10
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T05:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  2,
+                                         "sumouts":  52
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T06:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  8
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T06:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  34,
+                                         "sumouts":  28
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T06:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  27,
+                                         "sumouts":  51
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T06:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  5,
+                                         "sumouts":  7
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T06:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  6,
+                                         "sumouts":  41
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T07:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T07:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T07:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  10,
+                                         "sumouts":  38
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T07:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T07:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T08:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T08:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T08:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  2,
+                                         "sumouts":  40
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T08:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T08:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T09:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T09:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T09:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T09:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T09:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T10:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T10:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T10:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T10:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T10:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T11:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T11:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  4,
+                                         "sumouts":  3
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T11:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T11:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  3,
+                                         "sumouts":  1
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T11:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  8,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T12:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  1
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T12:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  7,
+                                         "sumouts":  3
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T12:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  0
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T12:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  2,
+                                         "sumouts":  5
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T12:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  7,
+                                         "sumouts":  7
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T13:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  1,
+                                         "sumouts":  2
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T13:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  9,
+                                         "sumouts":  5
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T13:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  0,
+                                         "sumouts":  2
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T13:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  6,
+                                         "sumouts":  8
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T13:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  4,
+                                         "sumouts":  2
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T14:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  6,
+                                         "sumouts":  2
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T14:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  23,
+                                         "sumouts":  40
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T14:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  7,
+                                         "sumouts":  6
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T14:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  34,
+                                         "sumouts":  11
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T14:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  45,
+                                         "sumouts":  10
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T15:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  29,
+                                         "sumouts":  8
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T15:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  66,
+                                         "sumouts":  66
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T15:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  12,
+                                         "sumouts":  9
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T15:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  108,
+                                         "sumouts":  43
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T15:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  75,
+                                         "sumouts":  26
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T16:00:00.000Z",
+                                         "zoneId":  "04b99bf1-9e84-406a-a859-54d239f33fa9",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  32,
+                                         "sumouts":  16
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T16:00:00.000Z",
+                                         "zoneId":  "225e190a-69d4-4b8f-a9f8-b90062f72c26",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  100,
+                                         "sumouts":  94
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T16:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  28,
+                                         "sumouts":  5
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T16:00:00.000Z",
+                                         "zoneId":  "5d816ff9-5362-4d3f-bbe3-b834e29c9cb8",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  98,
+                                         "sumouts":  69
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T16:00:00.000Z",
+                                         "zoneId":  "d29cf594-0416-426d-b99b-d86d1f4de93f",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  86,
+                                         "sumouts":  31
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T17:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  48,
+                                         "sumouts":  24
+                                     },
+                                     {
+                                         "recordDate_hour_1":  "2025-12-11T18:00:00.000Z",
+                                         "zoneId":  "452941b9-9cef-4bfb-b252-963f1e0c3d8a",
+                                         "name":  "Person count in/out 1",
+                                         "sumins":  111,
+                                         "sumouts":  49
                                      }
                                  ]
                  }

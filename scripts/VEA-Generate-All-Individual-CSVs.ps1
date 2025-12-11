@@ -60,7 +60,7 @@ foreach ($jsonFile in $ZoneJsonFiles) {
                 # Convert UTC timestamp to local timezone
                 $UtcDateTime = [DateTime]::Parse($record.recordDate_hour_1)
                 $LocalDateTime = $UtcDateTime.ToLocalTime()
-                $HourKey = $LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                $HourKey = $LocalDateTime.ToString("MM/dd/yyyy HH:mm")
                 
                 $HourlyData[$HourKey] = @{
                     DateTime = $LocalDateTime
