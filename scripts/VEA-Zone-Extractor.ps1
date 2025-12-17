@@ -1,6 +1,6 @@
 param(
-    [string]$StartDate = "2025-12-01T00:00:00Z",
-    [string]$EndDate = "2025-12-08T23:59:59Z",
+    [string]$StartDate,  # Will be auto-calculated if not provided
+    [string]$EndDate,    # Will be auto-calculated if not provided
     [string]$DataType = "traffic",
     [string]$DateGrouping = "hour",
     [string]$GateMethod = "Bidirectional"
@@ -26,13 +26,35 @@ foreach ($module in $modules) {
 # Set error handling preference
 $ErrorActionPreference = "Stop"
 
-# Ensure output directories exist
-function Ensure-OutputDirectories {
-    $outputDirs = @("output", "output\csv", "output\json")
-    foreach ($dir in $outputDirs) {
-        if (-not (Test-Path $dir)) {
-            New-Item -ItemType Directory -Path $dir -Force | Out-Null
-        }
+# Calculate automatic date range for current year
+function Get-AutomaticDateRange {
+    $currentDate = [DateTime]::Now
+
+    # Start date: First day of current year at midnight UTC
+    $startOfYear = [DateTime]::new($currentDate.Year, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
+    $startDate = $startOfYear.ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+    # End date: Current date at 23:59:59 UTC (end of today)
+    $endOfDay = [DateTime]::new($currentDate.Year, $currentDate.Month, $currentDate.Day, 23, 59, 59, [DateTimeKind]::Utc)
+    $endDate = $endOfDay.ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+    return @{
+        StartDate = $startDate
+        EndDate = $endDate
+    }
+}
+
+# Calculate automatic dates if not provided
+if (-not $StartDate -or -not $EndDate) {
+    Write-Host "Calculating automatic date range for current year..." -ForegroundColor Cyan
+    $dateRange = Get-AutomaticDateRange
+    if (-not $StartDate) {
+        $StartDate = $dateRange.StartDate
+        Write-Host "Auto Start Date: $StartDate" -ForegroundColor Gray
+    }
+    if (-not $EndDate) {
+        $EndDate = $dateRange.EndDate
+        Write-Host "Auto End Date: $EndDate" -ForegroundColor Gray
     }
 }
 
@@ -378,7 +400,16 @@ Write-Host "=" * 60 -ForegroundColor Green
 Write-Host "ZONE-BASED EXTRACTION COMPLETE" -ForegroundColor Green
 Write-Host "=" * 60 -ForegroundColor Green
 
-Write-Host "Date Range: $StartDate to $EndDate" -ForegroundColor White
+# Check if using automatic dates
+$currentDate = [DateTime]::Now
+$startOfYear = [DateTime]::new($currentDate.Year, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
+$autoStartDate = $startOfYear.ToString("yyyy-MM-ddTHH:mm:ssZ")
+$endOfDay = [DateTime]::new($currentDate.Year, $currentDate.Month, $currentDate.Day, 23, 59, 59, [DateTimeKind]::Utc)
+$autoEndDate = $endOfDay.ToString("yyyy-MM-ddTHH:mm:ssZ")
+
+$dateRangeType = if ($StartDate -eq $autoStartDate -and $EndDate -eq $autoEndDate) { " (Automatic: Current Year)" } else { " (Custom)" }
+
+Write-Host "Date Range: $StartDate to $EndDate$dateRangeType" -ForegroundColor White
 Write-Host "Gate Method: $GateMethod" -ForegroundColor White
 Write-Host "Successful extractions: $SuccessCount / $($Zones.Count)" -ForegroundColor White
 

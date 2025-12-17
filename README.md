@@ -55,9 +55,15 @@ This will validate your credentials and API connectivity.
 ```batch
 run_export.bat
 ```
-The script will prompt you for:
-- Start date (yyyy-mm-dd format)
-- End date (yyyy-mm-dd format)
+Automatically extracts data from:
+- **Start date**: First day of current year
+- **End date**: Current date (end of today)
+
+#### **Custom Date Range (Advanced)**
+If you need a specific date range:
+```powershell
+.\scripts\VEA-Zone-Extractor.ps1 -StartDate "2025-01-01T00:00:00Z" -EndDate "2025-12-31T23:59:59Z"
+```
 
 #### **Automated Mode (Task Scheduler)**
 For scheduled/automated runs, set credentials using environment variables:

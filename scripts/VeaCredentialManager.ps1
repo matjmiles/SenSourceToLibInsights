@@ -115,19 +115,34 @@ function Initialize-VeaCredentials {
     param(
         [Parameter(Mandatory=$true)]
         [string]$ClientId,
-
         [Parameter(Mandatory=$true)]
         [string]$ClientSecret
     )
 
-    Write-Host "Initializing VEA API credentials..." -ForegroundColor Cyan
+    Write-Host 'Initializing VEA API credentials...' -ForegroundColor Cyan
 
     # Validate format before storing
     if (-not [VeaCredentialManager]::ValidateCredentialFormat($ClientId, $ClientSecret)) {
-        Write-Host "Invalid credential format:" -ForegroundColor Red
+        Write-Host 'Invalid credential format:' -ForegroundColor Red
         if ($ClientId -notmatch '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$') {
-            Write-Host "  - Client ID must be a valid UUID format" -ForegroundColor Red
+            Write-Host '  - Client ID must be a valid UUID format' -ForegroundColor Red
         }
+        if ([string]::IsNullOrEmpty($ClientSecret) -or $ClientSecret.Length -le 20) {
+            Write-Host '  - Client Secret must be longer than 20 characters' -ForegroundColor Red
+        }
+        return $false
+    }
+
+    try {
+        [VeaCredentialManager]::StoreCredentials($ClientId, $ClientSecret)
+        Write-Host 'Credentials stored securely!' -ForegroundColor Green
+        return $true
+    }
+    catch {
+        Write-Error ('Failed to initialize credentials: ' + $_.Exception.Message)
+        return $false
+    }
+}
         if ([string]::IsNullOrEmpty($ClientSecret) -or $ClientSecret.Length -le 20) {
             Write-Host "  - Client Secret must be longer than 20 characters" -ForegroundColor Red
         }
@@ -191,7 +206,7 @@ class VeaEnvironmentCredentials {
         return $true
     }
     catch {
-        Write-Error "Failed to initialize credentials: $($_.Exception.Message)"
+        Write-Error ('Failed to initialize credentials: ' + $_.Exception.Message)
         return $false
     }
 }
