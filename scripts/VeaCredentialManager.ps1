@@ -143,22 +143,6 @@ function Initialize-VeaCredentials {
         return $false
     }
 }
-        if ([string]::IsNullOrEmpty($ClientSecret) -or $ClientSecret.Length -le 20) {
-            Write-Host "  - Client Secret must be longer than 20 characters" -ForegroundColor Red
-        }
-        return $false
-    }
-
-    try {
-        [VeaCredentialManager]::StoreCredentials($ClientId, $ClientSecret)
-        Write-Host "✓ Credentials stored securely!" -ForegroundColor Green
-        return $true
-    }
-    catch {
-        Write-Host "✗ Failed to store credentials: $($_.Exception.Message)" -ForegroundColor Red
-        return $false
-    }
-}
 
 # Environment variable based credential management (for automated scenarios)
 class VeaEnvironmentCredentials {
@@ -167,18 +151,18 @@ class VeaEnvironmentCredentials {
 
     # Store credentials in environment variables
     static [void] StoreInEnvironment([string]$clientId, [string]$clientSecret) {
-        [Environment]::SetEnvironmentVariable($ClientIdEnvVar, $clientId, "Machine")
-        [Environment]::SetEnvironmentVariable($ClientSecretEnvVar, $clientSecret, "Machine")
+        [Environment]::SetEnvironmentVariable([VeaEnvironmentCredentials]::ClientIdEnvVar, $clientId, "Machine")
+        [Environment]::SetEnvironmentVariable([VeaEnvironmentCredentials]::ClientSecretEnvVar, $clientSecret, "Machine")
         Write-Host "Credentials stored in environment variables" -ForegroundColor Green
     }
 
     # Retrieve credentials from environment variables
     static [PSCredential] GetFromEnvironment() {
-        $clientId = [Environment]::GetEnvironmentVariable($ClientIdEnvVar, "Machine")
-        $clientSecret = [Environment]::GetEnvironmentVariable($ClientSecretEnvVar, "Machine")
+        $clientId = [Environment]::GetEnvironmentVariable([VeaEnvironmentCredentials]::ClientIdEnvVar, "Machine")
+        $clientSecret = [Environment]::GetEnvironmentVariable([VeaEnvironmentCredentials]::ClientSecretEnvVar, "Machine")
 
         if ([string]::IsNullOrEmpty($clientId) -or [string]::IsNullOrEmpty($clientSecret)) {
-            throw "VEA credentials not found in environment variables. Set $ClientIdEnvVar and $ClientSecretEnvVar"
+            throw "VEA credentials not found in environment variables. Set $([VeaEnvironmentCredentials]::ClientIdEnvVar) and $([VeaEnvironmentCredentials]::ClientSecretEnvVar)"
         }
 
         $secureSecret = ConvertTo-SecureString $clientSecret -AsPlainText -Force
@@ -187,26 +171,15 @@ class VeaEnvironmentCredentials {
 
     # Check if environment credentials exist
     static [bool] EnvironmentCredentialsExist() {
-        $clientId = [Environment]::GetEnvironmentVariable($ClientIdEnvVar, "Machine")
-        $clientSecret = [Environment]::GetEnvironmentVariable($ClientSecretEnvVar, "Machine")
+        $clientId = [Environment]::GetEnvironmentVariable([VeaEnvironmentCredentials]::ClientIdEnvVar, "Machine")
+        $clientSecret = [Environment]::GetEnvironmentVariable([VeaEnvironmentCredentials]::ClientSecretEnvVar, "Machine")
         return -not ([string]::IsNullOrEmpty($clientId) -and [string]::IsNullOrEmpty($clientSecret))
     }
 
     # Clear environment credentials
     static [void] ClearEnvironmentCredentials() {
-        [Environment]::SetEnvironmentVariable($ClientIdEnvVar, $null, "Machine")
-        [Environment]::SetEnvironmentVariable($ClientSecretEnvVar, $null, "Machine")
+        [Environment]::SetEnvironmentVariable([VeaEnvironmentCredentials]::ClientIdEnvVar, $null, "Machine")
+        [Environment]::SetEnvironmentVariable([VeaEnvironmentCredentials]::ClientSecretEnvVar, $null, "Machine")
         Write-Host "Environment credentials cleared" -ForegroundColor Yellow
-    }
-}
-
-    try {
-        [VeaCredentialManager]::StoreCredentials($ClientId, $ClientSecret)
-        Write-Host "VEA API credentials configured successfully!" -ForegroundColor Green
-        return $true
-    }
-    catch {
-        Write-Error ('Failed to initialize credentials: ' + $_.Exception.Message)
-        return $false
     }
 }
