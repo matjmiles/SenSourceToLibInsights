@@ -51,36 +51,55 @@ This will validate your credentials and API connectivity.
 
 ### Step 4: Run Data Export
 
-#### **Interactive Mode**
+#### **🤖 Automated Mode (Recommended)**
 ```batch
 run_export.bat
 ```
-Automatically extracts data from:
-- **Start date**: First day of current year
-- **End date**: Current date (end of today)
+**Fully automated operation:**
+- **✅ Auto date calculation**: Jan 1 (current year) to today
+- **✅ Secure credentials**: Loads from Windows Credential Manager
+- **✅ Complete pipeline**: Extraction + CSV conversion + cleanup
+- **✅ No user input required**: Runs hands-free
 
 #### **Custom Date Range (Advanced)**
-If you need a specific date range:
+For specific date ranges, the scripts now support both automatic and manual dates:
 ```powershell
+# Automatic dates (recommended)
+.\scripts\VEA-Zone-Extractor.ps1
+
+# Custom date range (optional)
 .\scripts\VEA-Zone-Extractor.ps1 -StartDate "2025-01-01T00:00:00Z" -EndDate "2025-12-31T23:59:59Z"
 ```
 
-#### **Automated Mode (Task Scheduler)**
-For scheduled/automated runs, set credentials using environment variables:
-```powershell
-# Configure for automation
-.\scripts\setup-automated.ps1 -ClientId "your-client-id" -ClientSecret "your-client-secret" -UseEnvironmentVariables
+## 🕒 Windows Task Scheduler Setup
 
-# Then run non-interactively
-powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1" -StartDate "2025-12-01T00:00:00Z" -EndDate "2025-12-02T00:00:00Z"
-powershell -ExecutionPolicy Bypass -File "scripts\VEA-Generate-All-Individual-CSVs.ps1" -GateMethod "Bidirectional"
+### Method 1: GUI Setup (Recommended)
+1. **Open Task Scheduler** (`Win + R` → `taskschd.msc`)
+2. **Create Task** (not Basic Task)
+3. **General Tab**:
+   - Name: `VEA Daily Export`
+   - ☑ "Run whether user is logged on or not"
+   - ☑ "Run with highest privileges"
+4. **Triggers Tab**: Daily at preferred time (e.g., 6:00 AM)
+5. **Actions Tab**:
+   - Program: `"C:\path\to\vea springshare api\run_export.bat"`
+   - Start in: `C:\path\to\vea springshare api`
+6. **Save** and enter Windows password
+
+### Method 2: PowerShell Command
+```powershell
+$action = New-ScheduledTaskAction -Execute "C:\path\to\vea springshare api\run_export.bat" -WorkingDirectory "C:\path\to\vea springshare api"
+$trigger = New-ScheduledTaskTrigger -Daily -At "06:00"
+$principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Password -RunLevel Highest
+Register-ScheduledTask -TaskName "VEA Daily Export" -Action $action -Trigger $trigger -Principal $principal -Description "Automated VEA data extraction for LibInsights"
 ```
 
-#### **Task Scheduler Setup**
-1. Create a new task in Task Scheduler
-2. Set the program to: `powershell.exe`
-3. Set arguments: `-ExecutionPolicy Bypass -File "C:\path\to\scripts\VEA-Zone-Extractor.ps1" -StartDate "2025-12-01T00:00:00Z" -EndDate "2025-12-02T00:00:00Z"`
-4. Configure credentials using environment variables (not task credentials)
+### ✅ Task Scheduler Features
+- **🔐 Secure**: Uses Windows Credential Manager (no passwords in task)
+- **📅 Auto-dates**: Always extracts current year to date
+- **🔄 Clean process**: Removes old files before creating new ones
+- **📝 Logging**: Full console output for troubleshooting
+- **🌐 Network-aware**: Only runs when network is available
 
 ### Step 4: Import to Springshare
 - Use the CSV files from `output\csv\` folder
@@ -115,6 +134,21 @@ vea-springshare-api/
 └── README.md                 # This file
 ```
 
+## 🤖 Automation & Scheduling
+
+### Fully Automated Operation
+- **📅 Smart Date Calculation**: Always extracts from January 1st (current year) to current date
+- **🔄 Daily Updates**: Task Scheduler integration for automatic daily runs  
+- **🔐 Zero Configuration**: Uses stored credentials, no manual input required
+- **🧹 Clean Process**: Automatically removes old files before creating new ones
+- **📊 Complete Pipeline**: Extraction → Processing → CSV Generation in one command
+
+### Task Scheduler Integration  
+- **🕒 Background Execution**: Runs whether user is logged in or not
+- **🌐 Network Aware**: Only executes when network connection is available
+- **🛡️ Elevated Privileges**: Runs with highest privileges for reliability
+- **📝 Full Logging**: Complete console output captured for troubleshooting
+
 ## Security & Reliability
 
 - 🔐 **Secure Credential Storage**: API credentials encrypted using Windows Credential Manager or environment variables
@@ -127,9 +161,12 @@ vea-springshare-api/
 ## Features
 
 - ✅ **Individual Sensor Data**: Extracts unique data for each sensor location
-- ✅ **Date Range Support**: Configurable start and end dates
+- ✅ **🤖 Automatic Date Calculation**: Always extracts from Jan 1 to current date
+- ✅ **🔐 Secure Credential Management**: Windows Credential Manager integration
+- ✅ **📅 Task Scheduler Ready**: Complete hands-free automation support
 - ✅ **Springshare Compatible**: CSV format matches LibInsights requirements
 - ✅ **Automated Pipeline**: Single-click execution via batch file
+- ✅ **🧹 Smart Cleanup**: Removes duplicate files automatically
 - ✅ **Error Handling**: Comprehensive validation and error reporting
 
 ## Output Files
@@ -141,10 +178,13 @@ The application generates individual CSV files for each sensor:
 - `McKay_Library_Level_3_Bridge_individual_springshare_import.csv`
 - `McKay_Library_Level_3_Stairs_individual_springshare_import.csv`
 
-Each file contains daily traffic data with columns:
-- `date` - Date in YYYY-MM-DD format
-- `gate_start` - Entry count for the day
-- `gate_end` - Exit count for the day
+Each file contains **hourly** traffic data with columns:
+- `date` - Date in YYYY-MM-DD format  
+- `time` - Time in HH:mm format (24-hour, Mountain Time)
+- `gate_start` - Entry count for the hour
+- `gate_end` - Exit count for the hour
+
+**Data Coverage**: Automatic extraction from January 1st (current year) through current date with complete hourly granularity.
 
 ## Support
 
@@ -153,52 +193,34 @@ For technical issues or questions:
 2. Review the script documentation in `docs/SCRIPTS.md`
 3. Verify your VEA API credentials and permissions
 
-### **Implementation**: Two-Step Process
+## Implementation Status
 
-#### Step 1: Extract from VEA ✅ **COMPLETED**
-Use the provided PowerShell script: `VEA-DataExtractor-Final.ps1`
+### ✅ VEA Data Extraction - **COMPLETED**
+- **Full automation**: Automatic date ranges, secure credentials, Task Scheduler ready
+- **Individual sensor data**: 5 sensors with hourly granularity
+- **Robust pipeline**: Error handling, retries, validation, cleanup
+- **Springshare compatible**: CSV format matches LibInsights requirements
 
-**Usage Examples:**
-```powershell
-# Basic usage (last 7 days)
-.\VEA-DataExtractor-Final.ps1
+### ✅ LibInsights Integration - **COMPLETED** 
+- **CSV Import**: Successfully tested with LibInsights CSV import feature
+- **Format compatibility**: Proper date/time columns, timezone conversion (UTC → Mountain Time)
+- **Data mapping**: gate_start (entries) and gate_end (exits) columns
+- **Hourly distribution**: Resolved timezone issues for proper hourly traffic analysis
 
-# Custom date range
-.\VEA-DataExtractor-Final.ps1 -StartDate '2025-12-01' -EndDate '2025-12-07'
+## Data Processing Pipeline
 
-# Different data types
-.\VEA-DataExtractor-Final.ps1 -DataType 'occupancy'
-.\VEA-DataExtractor-Final.ps1 -DataType 'pos'
-
-# Different time groupings
-.\VEA-DataExtractor-Final.ps1 -DateGrouping 'day'
-.\VEA-DataExtractor-Final.ps1 -DateGrouping 'minute(15)'
-```
-
-#### Step 2: Import to Springshare ❓ **NEEDS RESEARCH**
-**Next Steps:**
-1. **Contact Springshare Support** - Ask about LibInsights data import capabilities
-2. **Check LibInsights UI** - Look for bulk import features
-3. **Alternative solutions** - Consider custom dashboard or middleware
-
-## Data Format
-
-The VEA API returns well-structured data with:
-- **Timestamps** in ISO-8601 format
-- **Traffic data**: `sumins` (entries) and `sumouts` (exits) 
-- **Hourly granularity** with precise datetime stamps
-- **JSON format** that's easy to process
-
-## Files Created
-
-1. **`VEA-DataExtractor-Final.ps1`** - Main extraction script
-2. **`vea_api_spec.json`** - Complete API specification
-3. **Sample data files** - JSON exports with timestamp, parameters, and data
+1. **🔐 Authentication**: Secure credential loading from Windows Credential Manager
+2. **📅 Date Calculation**: Automatic range from Jan 1 (current year) to current date  
+3. **📡 API Extraction**: VEA zone data with hourly granularity (UTC timestamps)
+4. **🕒 Timezone Conversion**: UTC → Mountain Time for LibInsights compatibility
+5. **📊 CSV Generation**: Individual sensor files with proper date/time columns
+6. **🧹 Cleanup**: Remove duplicate files, maintain clean output directory
 
 ## Conclusion
 
-✅ **VEA data extraction is simple and robust**
-❓ **Springshare integration requires further investigation**
-🔧 **PowerShell script provides flexible, no-dependency solution**
+✅ **Complete end-to-end automation** - VEA extraction to LibInsights import  
+✅ **Task Scheduler ready** - Hands-free daily operation  
+✅ **Production tested** - Timezone handling, data validation, error recovery  
+🔧 **Zero dependencies** - Pure PowerShell solution, no external tools required
 
-The simplest approach is definitely the PowerShell script - it requires no external tools and handles all the authentication and date range logic automatically.
+**Result**: Fully operational pipeline for automated daily extraction of VEA sensor data and LibInsights import preparation.
