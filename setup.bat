@@ -22,32 +22,46 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if already configured
-powershell -ExecutionPolicy Bypass -Command "& { . 'scripts\VeaCredentialManager.ps1'; if ([VeaCredentialManager]::CredentialsExist() -or [VeaEnvironmentCredentials]::EnvironmentCredentialsExist()) { Write-Host 'Credentials already configured!' -ForegroundColor Green; exit 0 } }" 2>nul
+REM Test if credentials exist AND work
+echo Testing existing credentials...
+powershell -ExecutionPolicy Bypass -File "scripts\test-credentials-simple.ps1" >nul 2>&1
 if %errorlevel% equ 0 (
-    echo Credentials are already configured.
-    echo To reconfigure, run: .\scripts\setup-automated.ps1 -ResetCredentials
-    echo Then run this setup again.
+    echo.
+    echo ====================================================
+    echo CREDENTIALS ALREADY CONFIGURED AND WORKING!
+    echo ====================================================
+    echo.
+    echo Your VEA API credentials are properly set up.
+    echo You can now run the export pipeline with: run_export.bat
     echo.
     pause
     exit /b 0
 )
 
-REM Run the secure credential setup
-echo Starting interactive credential setup...
+echo Existing credentials not found or not working.
+echo Setting up new credentials...
+
+REM Get credentials from user
 echo.
-echo You will be prompted to enter:
-echo - Client ID: Your VEA API Client ID (UUID format like 12345678-1234-1234-1234-123456789012)
-echo - Client Secret: Your VEA API Client Secret (long string, 30+ characters)
+echo Please enter your VEA API credentials:
 echo.
-powershell -ExecutionPolicy Bypass -File "scripts\setup-credentials.ps1"
+set /p "CLIENT_ID=Client ID (UUID format): "
+echo.
+set /p "CLIENT_SECRET=Client Secret: "
+
+echo.
+echo Setting up credentials securely...
+powershell -ExecutionPolicy Bypass -File "scripts\setup-automated.ps1" -ClientId "%CLIENT_ID%" -ClientSecret "%CLIENT_SECRET%"
 
 if errorlevel 1 (
     echo.
     echo ERROR: Credential setup failed
-    echo Please check your credentials and try again
+    echo Please check your credentials and try again.
     echo.
-    echo For automated setup options, see README.md
+    echo Make sure you entered:
+    echo - A valid Client ID (UUID format like 12345678-1234-1234-1234-123456789012)
+    echo - A valid Client Secret (long string, typically 30+ characters)
+    echo.
     pause
     exit /b 1
 )
@@ -57,10 +71,12 @@ echo ====================================================
 echo SETUP COMPLETE!
 echo ====================================================
 echo.
-echo Your VEA API credentials are now stored securely.
-echo You can now run the export pipeline with: run_export.bat
+echo Your VEA API credentials are now stored securely in Windows Credential Manager.
 echo.
-echo For Task Scheduler automation, use environment variables:
-echo   .\scripts\setup-automated.ps1 -ClientId "your-id" -ClientSecret "your-secret" -UseEnvironmentVariables
+echo Next Steps:
+echo 1. Run the export pipeline: run_export.bat
+echo 2. Set up Task Scheduler for automation (see README.md)
+echo.
+echo Your credentials are encrypted and will work across computer restarts.
 echo.
 pause
