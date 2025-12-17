@@ -15,14 +15,22 @@ cd SenSourceToLibInsights
 setup.bat
 ```
 This will:
-- Create `config.ps1` from the template
-- Prompt you to add your VEA API credentials
+- Securely store your VEA API credentials using Windows Credential Manager
+- Validate credential format and test API connectivity
 
 **Required VEA API Credentials:**
-- Client ID
+- Client ID (UUID format)
 - Client Secret
 
-### Step 3: Run Data Export
+**Security Note:** Credentials are now stored securely and encrypted, not in plain text files.
+
+### Step 3: Test Configuration (Optional)
+```batch
+powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1"
+```
+This will validate your credentials and API connectivity.
+
+### Step 4: Run Data Export
 ```batch
 run_export.bat
 ```
@@ -45,14 +53,31 @@ The script will prompt you for:
 ```
 vea-springshare-api/
 ├── scripts/                    # Core application scripts
+│   ├── VeaCredentialManager.ps1   # Secure credential management
+│   ├── VeaValidator.ps1          # Input validation functions
+│   ├── VeaExceptions.ps1         # Custom exception classes
+│   ├── setup-credentials.ps1     # Secure credential setup
+│   ├── test-credentials.ps1      # Credential validation test
+│   ├── VEA-Zone-Extractor.ps1    # Data extraction script
+│   ├── VEA-Zone-CSV-Processor.ps1 # CSV processing
+│   └── VEA-Generate-All-Individual-CSVs.ps1 # Batch processor
 ├── output/                     # Generated data files
 │   ├── csv/                   # Springshare-ready CSV files
 │   └── json/                  # Raw VEA zone data
 ├── docs/                      # Documentation and templates
 ├── archive/                   # Development/test scripts
 ├── run_export.bat            # Main execution script
+├── setup.bat                 # Secure setup script
 └── README.md                 # This file
 ```
+
+## Security & Reliability
+
+- 🔐 **Secure Credential Storage**: API credentials encrypted using Windows Credential Manager
+- ✅ **Input Validation**: Comprehensive parameter and credential validation
+- 🛡️ **Error Handling**: Structured exception handling with retry logic
+- 🔍 **Credential Testing**: Automated validation of API connectivity
+- ⚡ **Retry Logic**: Automatic retry for transient network failures
 
 ## Features
 

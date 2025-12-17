@@ -1,36 +1,40 @@
 @echo off
-REM Setup script for VEA to Springshare LibInsights Pipeline
+REM Secure VEA API Setup Script
+REM This script uses secure credential storage instead of plain text files
 
 echo ====================================================
-echo VEA TO SPRINGSHARE SETUP
+echo VEA TO SPRINGSHARE SECURE SETUP
 echo ====================================================
 echo.
 
-echo Checking for configuration file...
-if exist "config.ps1" (
-    echo ✓ Configuration file found: config.ps1
-    echo.
-    echo Ready to run! Execute: run_export.bat
-) else (
-    echo ✗ Configuration file NOT found
-    echo.
-    echo SETUP REQUIRED:
-    echo 1. Copy config.example.ps1 to config.ps1
-    echo 2. Edit config.ps1 with your VEA API credentials
-    echo 3. Run this setup script again to verify
-    echo.
-    echo Creating config.ps1 from template...
-    copy "config.example.ps1" "config.ps1"
-    echo.
-    echo ✓ Created config.ps1
-    echo ⚠ IMPORTANT: Edit config.ps1 with your actual VEA API credentials
-    echo.
-    echo Your credentials are needed:
-    echo - Client ID
-    echo - Client Secret
-    echo.
-    echo After editing config.ps1, run: run_export.bat
+REM Check if PowerShell is available
+powershell -Command "Write-Host 'PowerShell is available'" >nul 2>&1
+if errorlevel 1 (
+    echo ERROR: PowerShell is not available or not in PATH
+    echo Please ensure PowerShell is installed and accessible
+    pause
+    exit /b 1
 )
 
+REM Run the secure credential setup
+echo Starting secure credential setup...
+echo.
+powershell -ExecutionPolicy Bypass -File "scripts\setup-credentials.ps1"
+
+if errorlevel 1 (
+    echo.
+    echo ERROR: Credential setup failed
+    echo Please check your credentials and try again
+    pause
+    exit /b 1
+)
+
+echo.
+echo ====================================================
+echo SETUP COMPLETE!
+echo ====================================================
+echo.
+echo Your VEA API credentials are now stored securely.
+echo You can now run the export pipeline with: run_export.bat
 echo.
 pause

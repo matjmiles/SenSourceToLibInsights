@@ -6,18 +6,59 @@ param(
     [string]$GateMethod = "Bidirectional"
 )
 
-# Suppress non-critical errors to avoid confusing end users
-$ErrorActionPreference = "Continue"
+# Load required modules
+$modules = @(
+    "VeaCredentialManager.ps1",
+    "VeaValidator.ps1",
+    "VeaExceptions.ps1"
+)
 
-# VEA API Configuration - Load from external config file
-$ConfigPath = Join-Path $PSScriptRoot "..\config.ps1"
-if (Test-Path $ConfigPath) {
-    . $ConfigPath
-} else {
-    Write-Error "Configuration file not found: $ConfigPath"
-    Write-Host "Please create config.ps1 with your VEA API credentials. See config.example.ps1 for template."
+foreach ($module in $modules) {
+    $modulePath = Join-Path $PSScriptRoot $module
+    if (Test-Path $modulePath) {
+        . $modulePath
+    } else {
+        Write-Error "Required module not found: $modulePath"
+        exit 1
+    }
+}
+
+# Set error handling preference
+$ErrorActionPreference = "Stop"
+
+# Validate script parameters
+$paramValidation = [VeaValidator]::TestScriptParameters(@{
+    StartDate = $StartDate
+    EndDate = $EndDate
+    DataType = $DataType
+    DateGrouping = $DateGrouping
+    GateMethod = $GateMethod
+})
+
+if (-not $paramValidation) {
     exit 1
 }
+
+# Load secure credentials
+try {
+    $credentials = Invoke-VeaSafe { Get-VeaCredentials } "credential retrieval"
+    $ClientId = $credentials.ClientId
+    $ClientSecret = $credentials.ClientSecret
+} catch {
+    Write-Error "Failed to load credentials. Please run setup.bat to configure your VEA API credentials."
+    exit 1
+}
+
+# Validate API credentials
+Write-Host "Validating API credentials..." -ForegroundColor Cyan
+$credentialTest = Invoke-VeaRetry { Test-VeaApiCredentials -ClientId $ClientId -ClientSecret $ClientSecret }
+
+if (-not $credentialTest) {
+    Write-Error "API credential validation failed. Please check your credentials and network connectivity."
+    exit 1
+}
+
+Write-Host "API credentials validated successfully" -ForegroundColor Green
 
 $AuthUrl = "https://auth.sensourceinc.com/oauth/token"
 $ApiBaseUrl = "https://vea.sensourceinc.com/api"
@@ -46,46 +87,68 @@ Write-Host "Date Range: $StartDate to $EndDate" -ForegroundColor Cyan
 Write-Host "Data Type: $DataType | Grouping: $DateGrouping" -ForegroundColor Cyan
 Write-Host "Gate Method: $GateMethod" -ForegroundColor Cyan
 
-# Authentication function
+# Authentication function with proper error handling
 function Get-VEAAccessToken {
-    $AuthBody = @{
-        "grant_type" = "client_credentials"
-        "client_id" = $ClientId
-        "client_secret" = $ClientSecret
-    } | ConvertTo-Json
-
-    $Headers = @{ "Content-Type" = "application/json" }
-
     try {
-        $Response = Invoke-RestMethod -Uri $AuthUrl -Method Post -Body $AuthBody -Headers $Headers
-        return $Response.access_token
+        $authBody = @{
+            grant_type = "client_credentials"
+            client_id = $ClientId
+            client_secret = $ClientSecret
+        } | ConvertTo-Json
+
+        $headers = @{ "Content-Type" = "application/json" }
+
+        $response = Invoke-VeaRetry {
+            Invoke-RestMethod -Uri $AuthUrl -Method Post -Body $authBody -Headers $headers -TimeoutSec 30
+        }
+
+        if (-not $response.access_token) {
+            throw [VeaAuthenticationException]::new("No access token received from authentication endpoint",
+                @{ Endpoint = $AuthUrl; Response = $response })
+        }
+
+        return $response.access_token
+    }
+    catch [VeaException] {
+        throw
     }
     catch {
-        Write-Host "Authentication failed: $($_.Exception.Message)" -ForegroundColor Red
-        return $null
+        throw [VeaAuthenticationException]::new("Authentication failed: $($_.Exception.Message)",
+            @{ Endpoint = $AuthUrl })
     }
 }
 
-# Get zones from API
+# Get zones from API with proper error handling
 function Get-VEAZones {
     param([string]$AccessToken)
-    
-    $Headers = @{
-        "Authorization" = "Bearer $AccessToken"
-        "Content-Type" = "application/json"
-    }
 
     try {
-        $Response = Invoke-RestMethod -Uri "$ApiBaseUrl/zone" -Method Get -Headers $Headers
-        return $Response
+        $headers = @{
+            "Authorization" = "Bearer $AccessToken"
+            "Content-Type" = "application/json"
+        }
+
+        $response = Invoke-VeaRetry {
+            Invoke-RestMethod -Uri "$ApiBaseUrl/zone" -Method Get -Headers $headers -TimeoutSec 30
+        }
+
+        if (-not $response -or $response.Count -eq 0) {
+            throw [VeaDataException]::new("No zones returned from API",
+                @{ Endpoint = "$ApiBaseUrl/zone" })
+        }
+
+        return $response
+    }
+    catch [VeaException] {
+        throw
     }
     catch {
-        Write-Host "Failed to get zones: $($_.Exception.Message)" -ForegroundColor Red
-        return $null
+        throw [VeaApiException]::new("Failed to retrieve zones: $($_.Exception.Message)",
+            @{ Endpoint = "$ApiBaseUrl/zone" })
     }
 }
 
-# Get traffic data for a specific zone
+# Get traffic data for a specific zone with proper error handling
 function Get-ZoneTrafficData {
     param(
         [string]$AccessToken,
@@ -95,39 +158,45 @@ function Get-ZoneTrafficData {
         [string]$EndDate,
         [string]$DateGrouping
     )
-    
-    $Headers = @{
-        "Authorization" = "Bearer $AccessToken"
-        "Content-Type" = "application/json"
-    }
-
-    # Build URL for zone-specific traffic data
-    $BaseUrl = "$ApiBaseUrl/data/traffic"
-    $Params = @(
-        "relativeDate=custom",
-        "startDate=$StartDate",
-        "endDate=$EndDate", 
-        "dateGroupings=$DateGrouping",
-        "entityType=zone",
-        "zoneId=$ZoneId"
-    )
-    
-    $DataUrl = $BaseUrl + "?" + ($Params -join "&")
-    
-    Write-Host "  Querying zone: $ZoneName" -ForegroundColor Yellow
-    Write-Host "  Zone ID: $ZoneId" -ForegroundColor Gray
-    Write-Host "  URL: $DataUrl" -ForegroundColor DarkGray
 
     try {
-        $Response = Invoke-RestMethod -Uri $DataUrl -Method Get -Headers $Headers
-        
-        if ($Response.results -and $Response.results.Count -gt 0) {
-            Write-Host "  Success: $($Response.results.Count) records" -ForegroundColor Green
-            return $Response
+        $headers = @{
+            "Authorization" = "Bearer $AccessToken"
+            "Content-Type" = "application/json"
+        }
+
+        # Build URL for zone-specific traffic data
+        $baseUrl = "$ApiBaseUrl/data/traffic"
+        $params = @(
+            "relativeDate=custom",
+            "startDate=$StartDate",
+            "endDate=$EndDate",
+            "dateGroupings=$DateGrouping",
+            "entityType=zone",
+            "zoneId=$ZoneId"
+        )
+
+        $dataUrl = $baseUrl + "?" + ($params -join "&")
+
+        Write-Host "  Querying zone: $ZoneName" -ForegroundColor Yellow
+        Write-Host "  Zone ID: $ZoneId" -ForegroundColor Gray
+        Write-Host "  URL: $dataUrl" -ForegroundColor DarkGray
+
+        $response = Invoke-VeaRetry {
+            Invoke-RestMethod -Uri $dataUrl -Method Get -Headers $headers -TimeoutSec 60
+        }
+
+        if ($response.results -and $response.results.Count -gt 0) {
+            Write-Host "  Success: $($response.results.Count) records" -ForegroundColor Green
+            return $response
         } else {
             Write-Host "  No data returned for this zone" -ForegroundColor Yellow
             return $null
         }
+    }
+    catch [VeaException] {
+        Write-Host "  Error: $($_.Message)" -ForegroundColor Red
+        return $null
     }
     catch {
         Write-Host "  Error: $($_.Exception.Message)" -ForegroundColor Red
@@ -247,28 +316,28 @@ function Create-ZoneSpringshareCSV {
     return $CsvFile
 }
 
-# Main execution
+# Main execution with proper error handling
 Write-Host ""
 Write-Host "Step 1: Authentication" -ForegroundColor Yellow
-$AccessToken = Get-VEAAccessToken
 
-if (-not $AccessToken) {
-    Write-Host "Cannot proceed without authentication. Exiting." -ForegroundColor Red
+try {
+    $accessToken = Invoke-VeaSafe { Get-VEAAccessToken } "authentication"
+    Write-Host "Authentication successful" -ForegroundColor Green
+} catch {
+    [VeaErrorHandler]::HandleException($_)
     exit 1
 }
-
-Write-Host "Authentication successful" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "Step 2: Getting zones list" -ForegroundColor Yellow
-$Zones = Get-VEAZones -AccessToken $AccessToken
 
-if (-not $Zones -or $Zones.Count -eq 0) {
-    Write-Host "No zones found or error getting zones. Exiting." -ForegroundColor Red
+try {
+    $zones = Invoke-VeaSafe { Get-VEAZones -AccessToken $accessToken } "zone retrieval"
+    Write-Host "Found $($zones.Count) zones" -ForegroundColor Green
+} catch {
+    [VeaErrorHandler]::HandleException($_)
     exit 1
 }
-
-Write-Host "Found $($Zones.Count) zones" -ForegroundColor Green
 
 # Save zones data for reference
 $Zones | ConvertTo-Json -Depth 10 | Out-File -FilePath "vea_zones_list.json" -Encoding UTF8
@@ -281,50 +350,63 @@ $ProcessedZones = @()
 $CreatedFiles = @()
 $SuccessCount = 0
 
-foreach ($zone in $Zones) {
+foreach ($zone in $zones) {
     Write-Host ""
     Write-Host "Processing Zone:" -ForegroundColor Cyan
     Write-Host "   Zone ID: $($zone.zoneId)" -ForegroundColor Gray
     Write-Host "   Zone Name: $($zone.name)" -ForegroundColor Gray
     Write-Host "   Sensor ID: $($zone.sensorId)" -ForegroundColor Gray
-    
+
     # Get friendly sensor name
-    $SensorName = $SensorNameMap[$zone.sensorId]
-    if (-not $SensorName) {
-        $SensorName = "Unknown Sensor $($zone.sensorId)"
+    $sensorName = $SensorNameMap[$zone.sensorId]
+    if (-not $sensorName) {
+        $sensorName = "Unknown Sensor $($zone.sensorId)"
         Write-Host "   Unknown sensor, using generic name" -ForegroundColor Yellow
     }
-    
-    Write-Host "   Friendly Name: $SensorName" -ForegroundColor Cyan
-    
-    # Get zone traffic data
-    $ZoneData = Get-ZoneTrafficData -AccessToken $AccessToken -ZoneId $zone.zoneId -ZoneName $zone.name -StartDate $StartDate -EndDate $EndDate -DateGrouping $DateGrouping
-    
-    if ($ZoneData) {
-        $CsvFile = Create-ZoneSpringshareCSV -ZoneData $ZoneData -SensorName $SensorName -ZoneId $zone.zoneId -GateMethod $GateMethod
-        
-        if ($CsvFile) {
-            $CreatedFiles += $CsvFile
-            $SuccessCount++
+
+    Write-Host "   Friendly Name: $sensorName" -ForegroundColor Cyan
+
+    # Get zone traffic data with error handling
+    try {
+        $zoneData = Get-ZoneTrafficData -AccessToken $accessToken -ZoneId $zone.zoneId -ZoneName $zone.name -StartDate $StartDate -EndDate $EndDate -DateGrouping $DateGrouping
+
+        if ($zoneData) {
+            $csvFile = Create-ZoneSpringshareCSV -ZoneData $zoneData -SensorName $sensorName -ZoneId $zone.zoneId -GateMethod $GateMethod
+
+            if ($csvFile) {
+                $CreatedFiles += $csvFile
+                $SuccessCount++
+            }
+
+            $ProcessedZones += @{
+                ZoneId = $zone.zoneId
+                ZoneName = $zone.name
+                SensorId = $zone.sensorId
+                SensorName = $sensorName
+                Success = $true
+                CsvFile = $csvFile
+            }
+        } else {
+            $ProcessedZones += @{
+                ZoneId = $zone.zoneId
+                ZoneName = $zone.name
+                SensorId = $zone.sensorId
+                SensorName = $sensorName
+                Success = $false
+            }
+            Write-Host "   No data available for this zone" -ForegroundColor Yellow
         }
-        
+    }
+    catch {
+        Write-Host "   Error processing zone $($zone.zoneId): $($_.Exception.Message)" -ForegroundColor Red
         $ProcessedZones += @{
             ZoneId = $zone.zoneId
             ZoneName = $zone.name
             SensorId = $zone.sensorId
-            SensorName = $SensorName
-            Success = $true
-            CsvFile = $CsvFile
-        }
-    } else {
-        $ProcessedZones += @{
-            ZoneId = $zone.zoneId
-            ZoneName = $zone.name
-            SensorId = $zone.sensorId
-            SensorName = $SensorName
+            SensorName = $sensorName
             Success = $false
+            Error = $_.Exception.Message
         }
-        Write-Host "   Failed to get data for this zone" -ForegroundColor Red
     }
 }
 
