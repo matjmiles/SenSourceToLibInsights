@@ -11,18 +11,37 @@ cd SenSourceToLibInsights
 ```
 
 ### Step 2: Configure Credentials
+
+#### **Option A: Interactive Setup (Recommended for first-time use)**
 ```batch
 setup.bat
 ```
 This will:
-- Securely store your VEA API credentials using Windows Credential Manager
-- Validate credential format and test API connectivity
+- Prompt you to enter your VEA API credentials
+- Store them securely in Windows Credential Manager
+- Validate format and test API connectivity
+
+#### **Option B: Automated Setup (For scripts/Task Scheduler)**
+```powershell
+# Set environment variables (recommended for automation)
+.\scripts\setup-automated.ps1 -ClientId "your-client-id" -ClientSecret "your-client-secret" -UseEnvironmentVariables
+
+# Or use Windows Credential Manager programmatically
+.\scripts\setup-automated.ps1 -ClientId "your-client-id" -ClientSecret "your-client-secret"
+```
+
+#### **Option C: Manual Environment Variables**
+```powershell
+# Set system environment variables
+[Environment]::SetEnvironmentVariable("VEA_API_CLIENT_ID", "your-client-id", "Machine")
+[Environment]::SetEnvironmentVariable("VEA_API_CLIENT_SECRET", "your-client-secret", "Machine")
+```
 
 **Required VEA API Credentials:**
 - Client ID (UUID format)
 - Client Secret
 
-**Security Note:** Credentials are now stored securely and encrypted, not in plain text files.
+**Security Note:** Credentials are stored securely and encrypted, never in plain text files.
 
 ### Step 3: Test Configuration (Optional)
 ```batch
@@ -31,12 +50,31 @@ powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1"
 This will validate your credentials and API connectivity.
 
 ### Step 4: Run Data Export
+
+#### **Interactive Mode**
 ```batch
 run_export.bat
 ```
 The script will prompt you for:
 - Start date (yyyy-mm-dd format)
 - End date (yyyy-mm-dd format)
+
+#### **Automated Mode (Task Scheduler)**
+For scheduled/automated runs, set credentials using environment variables:
+```powershell
+# Configure for automation
+.\scripts\setup-automated.ps1 -ClientId "your-client-id" -ClientSecret "your-client-secret" -UseEnvironmentVariables
+
+# Then run non-interactively
+powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1" -StartDate "2025-12-01T00:00:00Z" -EndDate "2025-12-02T00:00:00Z"
+powershell -ExecutionPolicy Bypass -File "scripts\VEA-Generate-All-Individual-CSVs.ps1" -GateMethod "Bidirectional"
+```
+
+#### **Task Scheduler Setup**
+1. Create a new task in Task Scheduler
+2. Set the program to: `powershell.exe`
+3. Set arguments: `-ExecutionPolicy Bypass -File "C:\path\to\scripts\VEA-Zone-Extractor.ps1" -StartDate "2025-12-01T00:00:00Z" -EndDate "2025-12-02T00:00:00Z"`
+4. Configure credentials using environment variables (not task credentials)
 
 ### Step 4: Import to Springshare
 - Use the CSV files from `output\csv\` folder
@@ -73,10 +111,11 @@ vea-springshare-api/
 
 ## Security & Reliability
 
-- 🔐 **Secure Credential Storage**: API credentials encrypted using Windows Credential Manager
+- 🔐 **Secure Credential Storage**: API credentials encrypted using Windows Credential Manager or environment variables
 - ✅ **Input Validation**: Comprehensive parameter and credential validation
 - 🛡️ **Error Handling**: Structured exception handling with retry logic
 - 🔍 **Credential Testing**: Automated validation of API connectivity
+- 🤖 **Automation Ready**: Supports both interactive and non-interactive credential management
 - ⚡ **Retry Logic**: Automatic retry for transient network failures
 
 ## Features
