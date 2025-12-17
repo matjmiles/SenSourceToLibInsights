@@ -26,6 +26,18 @@ foreach ($module in $modules) {
 # Set error handling preference
 $ErrorActionPreference = "Stop"
 
+# API Configuration
+$ApiBaseUrl = "https://vea.sensourceinc.com/api"
+
+# Sensor ID to friendly name mapping
+$SensorNameMap = @{
+    "34e07466-3cd7-4e74-889a-b63891d056b5" = "McKay Library Level 3 Stairs"
+    "5aeebd64-77eb-48c6-886b-9398703311d1" = "McKay Library Level 2 Stairs" 
+    "508b24fa-eebf-4fa7-9ccd-0130334a99fb" = "McKay Library Level 3 Bridge"
+    "24a57257-03c4-4220-acf7-267bc8c9c344" = "McKay Library Level 1 Main Entrance 1"
+    "e2d3ed7a-0838-4fbf-a0e1-9b60ceaa49b4" = "McKay Library Level 1 New Entrance"
+}
+
 # Calculate automatic date range for current year
 function Get-AutomaticDateRange {
     $currentDate = [DateTime]::Now
@@ -91,6 +103,27 @@ if (-not $credentialTest) {
 }
 
 Write-Host "API credentials validated successfully" -ForegroundColor Green
+
+# Get access token from VEA API
+function Get-VEAAccessToken {
+    $authUrl = "https://auth.sensourceinc.com/oauth/token"
+
+    $authBody = @{
+        grant_type = "client_credentials"
+        client_id = $ClientId
+        client_secret = $ClientSecret
+    } | ConvertTo-Json
+
+    $headers = @{ "Content-Type" = "application/json" }
+
+    $tokenResponse = Invoke-RestMethod -Uri $authUrl -Method Post -Body $authBody -Headers $headers -TimeoutSec 30
+
+    if (-not $tokenResponse.access_token) {
+        throw [VeaAuthenticationException]::new("Failed to obtain access token from VEA API")
+    }
+
+    return $tokenResponse.access_token
+}
 
 # Get zones from API with proper error handling
 function Get-VEAZones {
