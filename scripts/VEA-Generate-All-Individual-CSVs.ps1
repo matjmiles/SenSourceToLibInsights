@@ -23,7 +23,7 @@ Write-Host "Processing all zone JSON files to create individual sensor CSVs" -Fo
 Write-Host "Gate Method: $GateMethod" -ForegroundColor Cyan
 
 # Find all zone data JSON files
-$ZoneJsonFiles = Get-ChildItem -Filter "*_zone_data.json"
+$ZoneJsonFiles = Get-ChildItem -Path "output\json" -Filter "*_zone_data.json"
 
 if ($ZoneJsonFiles.Count -eq 0) {
     Write-Host "No zone JSON files found! Please run the zone extractor first." -ForegroundColor Red
