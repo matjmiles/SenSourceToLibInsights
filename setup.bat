@@ -19,6 +19,10 @@ if errorlevel 1 (
 REM Run the secure credential setup
 echo Starting secure credential setup...
 echo.
+echo IMPORTANT: You will be prompted to enter your VEA API credentials.
+echo - Client ID: Your VEA API Client ID (UUID format)
+echo - Client Secret: Your VEA API Client Secret
+echo.
 powershell -ExecutionPolicy Bypass -File "scripts\setup-credentials.ps1"
 
 if errorlevel 1 (

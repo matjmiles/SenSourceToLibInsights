@@ -1,11 +1,6 @@
 # VEA API Secure Setup Script
 # This script replaces the plain text config.ps1 with secure credential storage
 
-param(
-    [switch]$ResetCredentials,
-    [switch]$CheckCredentials
-)
-
 # Import the credential manager module
 $credentialManagerPath = Join-Path $PSScriptRoot "VeaCredentialManager.ps1"
 if (-not (Test-Path $credentialManagerPath)) {
@@ -19,34 +14,6 @@ Write-Host "=======================================" -ForegroundColor Green
 Write-Host "VEA API SECURE CREDENTIAL SETUP" -ForegroundColor Green
 Write-Host "=======================================" -ForegroundColor Green
 Write-Host ""
-
-# Handle reset credentials option
-if ($ResetCredentials) {
-    Write-Host "Resetting stored credentials..." -ForegroundColor Yellow
-    [VeaCredentialManager]::ClearCredentials()
-    Write-Host "Credentials reset. Please run setup again to configure new credentials." -ForegroundColor Green
-    exit 0
-}
-
-# Handle check credentials option
-if ($CheckCredentials) {
-    Write-Host "Checking credential status..." -ForegroundColor Cyan
-
-    if ([VeaCredentialManager]::CredentialsExist()) {
-        Write-Host "✓ Credentials are stored securely" -ForegroundColor Green
-        try {
-            $creds = Get-VeaCredentials
-            Write-Host "✓ Credentials can be retrieved" -ForegroundColor Green
-            Write-Host "Client ID: $($creds.ClientId)" -ForegroundColor Gray
-        }
-        catch {
-            Write-Host "✗ Credentials cannot be retrieved: $($_.Exception.Message)" -ForegroundColor Red
-        }
-    } else {
-        Write-Host "✗ No credentials stored" -ForegroundColor Red
-    }
-    exit 0
-}
 
 # Check if credentials already exist
 if ([VeaCredentialManager]::CredentialsExist()) {
