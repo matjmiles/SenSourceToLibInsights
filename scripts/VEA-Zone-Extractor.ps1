@@ -26,6 +26,16 @@ foreach ($module in $modules) {
 # Set error handling preference
 $ErrorActionPreference = "Stop"
 
+# Ensure output directories exist
+function Ensure-OutputDirectories {
+    $outputDirs = @("output", "output\csv", "output\json")
+    foreach ($dir in $outputDirs) {
+        if (-not (Test-Path $dir)) {
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        }
+    }
+}
+
 # Validate script parameters
 $paramValidation = [VeaValidator]::TestScriptParameters(@{
     StartDate = $StartDate
@@ -60,64 +70,6 @@ if (-not $credentialTest) {
 
 Write-Host "API credentials validated successfully" -ForegroundColor Green
 
-$AuthUrl = "https://auth.sensourceinc.com/oauth/token"
-$ApiBaseUrl = "https://vea.sensourceinc.com/api"
-
-# Sensor ID to friendly name mapping
-$SensorNameMap = @{
-    "34e07466-3cd7-4e74-889a-b63891d056b5" = "McKay Library Level 3 Stairs"
-    "5aeebd64-77eb-48c6-886b-9398703311d1" = "McKay Library Level 2 Stairs" 
-    "508b24fa-eebf-4fa7-9ccd-0130334a99fb" = "McKay Library Level 3 Bridge"
-    "24a57257-03c4-4220-acf7-267bc8c9c344" = "McKay Library Level 1 Main Entrance 1"
-    "e2d3ed7a-0838-4fbf-a0e1-9b60ceaa49b4" = "McKay Library Level 1 New Entrance"
-}
-
-# Handle different date input formats
-if ($StartDate -notmatch 'T.*Z$') {
-    # Convert yyyy-mm-dd to full ISO-8601 format
-    $StartDate = "${StartDate}T00:00:00Z"
-}
-if ($EndDate -notmatch 'T.*Z$') {
-    # Convert yyyy-mm-dd to full ISO-8601 format  
-    $EndDate = "${EndDate}T23:59:59Z"
-}
-
-Write-Host "VEA Zone-Based Individual Sensor Extractor" -ForegroundColor Green
-Write-Host "Date Range: $StartDate to $EndDate" -ForegroundColor Cyan
-Write-Host "Data Type: $DataType | Grouping: $DateGrouping" -ForegroundColor Cyan
-Write-Host "Gate Method: $GateMethod" -ForegroundColor Cyan
-
-# Authentication function with proper error handling
-function Get-VEAAccessToken {
-    try {
-        $authBody = @{
-            grant_type = "client_credentials"
-            client_id = $ClientId
-            client_secret = $ClientSecret
-        } | ConvertTo-Json
-
-        $headers = @{ "Content-Type" = "application/json" }
-
-        $response = Invoke-VeaRetry {
-            Invoke-RestMethod -Uri $AuthUrl -Method Post -Body $authBody -Headers $headers -TimeoutSec 30
-        }
-
-        if (-not $response.access_token) {
-            throw [VeaAuthenticationException]::new("No access token received from authentication endpoint",
-                @{ Endpoint = $AuthUrl; Response = $response })
-        }
-
-        return $response.access_token
-    }
-    catch [VeaException] {
-        throw
-    }
-    catch {
-        throw [VeaAuthenticationException]::new("Authentication failed: $($_.Exception.Message)",
-            @{ Endpoint = $AuthUrl })
-    }
-}
-
 # Get zones from API with proper error handling
 function Get-VEAZones {
     param([string]$AccessToken)
@@ -145,6 +97,16 @@ function Get-VEAZones {
     catch {
         throw [VeaApiException]::new("Failed to retrieve zones: $($_.Exception.Message)",
             @{ Endpoint = "$ApiBaseUrl/zone" })
+    }
+}
+
+# Ensure output directories exist
+function Ensure-OutputDirectories {
+    $outputDirs = @("output", "output\csv", "output\json")
+    foreach ($dir in $outputDirs) {
+        if (-not (Test-Path $dir)) {
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        }
     }
 }
 
@@ -214,8 +176,8 @@ function Create-ZoneSpringshareCSV {
     )
 
     $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
-    $CsvFile = "${SafeName}_springshare_import.csv"
-    $JsonFile = "${SafeName}_zone_data.json"
+    $CsvFile = "output\csv\${SafeName}_springshare_import.csv"
+    $JsonFile = "output\json\${SafeName}_zone_data.json"
 
     # Save raw zone data
     $ZoneDataPackage = @{
@@ -339,9 +301,9 @@ try {
     exit 1
 }
 
-# Save zones data for reference
-$Zones | ConvertTo-Json -Depth 10 | Out-File -FilePath "vea_zones_list.json" -Encoding UTF8
-Write-Host "Saved zones list to: vea_zones_list.json" -ForegroundColor Gray
+    # Save zones data for reference
+    $Zones | ConvertTo-Json -Depth 10 | Out-File -FilePath "output\json\vea_zones_list.json" -Encoding UTF8
+    Write-Host "Saved zones list to: output\json\vea_zones_list.json" -ForegroundColor Gray
 
 Write-Host ""
 Write-Host "Step 3: Processing each zone" -ForegroundColor Yellow

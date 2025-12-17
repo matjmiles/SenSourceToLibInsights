@@ -79,7 +79,7 @@ Write-Host "  Daily aggregation complete: $($DailyTotals.Count) days" -Foregroun
 
 # Create Springshare CSV
 $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
-$CsvFile = "${SafeName}_individual_springshare_import.csv"
+$CsvFile = "output\csv\${SafeName}_individual_springshare_import.csv"
 
 $CsvLines = @("date,gate_start,gate_end")
 

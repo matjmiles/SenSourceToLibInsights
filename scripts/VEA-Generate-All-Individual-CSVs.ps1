@@ -6,6 +6,18 @@ param(
 # Suppress non-critical errors for better user experience
 $ErrorActionPreference = "SilentlyContinue"
 
+# Ensure output directories exist
+function Ensure-OutputDirectories {
+    $outputDirs = @("output", "output\csv", "output\json")
+    foreach ($dir in $outputDirs) {
+        if (-not (Test-Path $dir)) {
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        }
+    }
+}
+
+Ensure-OutputDirectories
+
 Write-Host "VEA Individual Sensor CSV Generator" -ForegroundColor Green
 Write-Host "Processing all zone JSON files to create individual sensor CSVs" -ForegroundColor Cyan
 Write-Host "Gate Method: $GateMethod" -ForegroundColor Cyan
@@ -77,7 +89,7 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         
         # Create Springshare CSV with hourly data
         $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
-        $CsvFile = "${SafeName}_individual_springshare_import.csv"
+        $CsvFile = "output\csv\${SafeName}_individual_springshare_import.csv"
         
         $CsvLines = @("date,time,gate_start,gate_end")
         
@@ -155,7 +167,7 @@ if ($CreatedFiles.Count -gt 0) {
     # Clean up old files (the ones with identical data)
     Write-Host ""
     Write-Host "Cleaning up duplicate files..." -ForegroundColor Yellow
-    Get-ChildItem -Filter "*_springshare_import.csv" | Where-Object { $_.Name -notlike "*_individual_*" } | ForEach-Object {
+    Get-ChildItem -Path "output\csv" -Filter "*_springshare_import.csv" | Where-Object { $_.Name -notlike "*_individual_*" } | ForEach-Object {
         Remove-Item $_.FullName -Force
         Write-Host "  Removed: $($_.Name)" -ForegroundColor Gray
     }
