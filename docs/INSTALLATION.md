@@ -57,33 +57,27 @@ This allows locally created scripts to run while maintaining security for downlo
    ```batch
    setup.bat
    ```
-   This will automatically create `config.ps1` from the template.
+   This will prompt you to enter your VEA API credentials and store them securely.
 
-2. **Manual Setup** (Alternative):
-   - Copy `config.example.ps1` to `config.ps1` in the project root
-   
+2. **Automated Setup** (Advanced):
+   ```powershell
+   .\scripts\setup-automated.ps1 -ClientId "your-id" -ClientSecret "your-secret"
+   ```
+
 3. **Obtain VEA Credentials**:
    - Log into your VEA dashboard
    - Navigate to API settings or contact VEA support
    - Note your Client ID and Client Secret
 
-4. **Edit Configuration**:
-   - Open `config.ps1` in a text editor
-   - Replace the placeholder values with your actual VEA credentials:
-   ```powershell
-   # VEA API Configuration
-   $ClientId = "your-actual-client-id"
-   $ClientSecret = "your-actual-client-secret"
-   ```
-   - Save the file (it will be ignored by git for security)
+The setup script will store your credentials securely using Windows Credential Manager.
 
 ## Security Note
 
 **🔒 Your API credentials are secure:**
-- The `config.ps1` file is automatically ignored by git
-- Your credentials never get committed to the repository
+- Credentials are stored in Windows Credential Manager (encrypted)
+- No plain text credential files in your repository
 - Safe to clone, fork, or share the repository without exposing sensitive data
-- The `config.example.ps1` file shows the format but contains no real credentials
+- Supports both interactive and automated credential setup
 
 ### Step 4: Test Installation
 
@@ -138,35 +132,19 @@ $StartDate = (Get-Date -Day 1).ToString("yyyy-MM-ddT00:00:00Z")
 $EndDate = (Get-Date -Day 1).AddMonths(1).AddDays(-1).ToString("yyyy-MM-ddT23:59:59Z")
 ```
 
-### Gate Method Selection
-
-The pipeline supports different counting methods:
-
-```powershell
-# In run_export.bat, modify this line:
-powershell -ExecutionPolicy Bypass -File "scripts\VEA-Generate-All-Individual-CSVs.ps1" -GateMethod "Bidirectional"
-
-# Options:
-# "Bidirectional" - Counts entries and exits separately
-# "Unidirectional" - Counts total traffic in one direction
-```
-
 ## Running the Application
 
 ### Automated Execution (Recommended)
 ```batch
 run_export.bat
 ```
-The script will prompt for start and end dates in yyyy-mm-dd format.
+The script automatically extracts data for the current year and generates both JSON and CSV files.
 
-### Manual Execution
-```powershell
-# Step 1: Extract zone data
-.\scripts\VEA-Zone-Extractor.ps1
-
-# Step 2: Generate individual CSV files  
-.\scripts\VEA-Generate-All-Individual-CSVs.ps1 -GateMethod "Bidirectional"
+### Custom Date Range
+```batch
+run_custom_dates.bat
 ```
+Allows you to specify custom start and end dates for data extraction.
 
 ### Scheduled Execution
 To run automatically, create a Windows Task Scheduler task:
@@ -271,10 +249,9 @@ Warning: CSV file contains no data
 Edit the scripts to change default output locations:
 ```powershell
 # In VEA-Zone-Extractor.ps1
-$OutputPath = "C:\MyCustomPath\json\"
-
-# In VEA-Generate-All-Individual-CSVs.ps1  
-$CsvOutputPath = "C:\MyCustomPath\csv\"
+# Output paths are built-in and organized automatically
+# JSON: output/json/{SensorName}_zone_data.json
+# CSV: output/csv/occupancy/{FriendlyName}.csv and output/csv/gate_counts/{FriendlyName}.csv
 ```
 
 #### API Timeout Settings

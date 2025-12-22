@@ -1,5 +1,0 @@
-https://vea.sensourceinc.com/api-docs/
-
-client id: f01cc7bb-e060-4965-bcda-612e2dc8d294
-
-client secret: 3b710165-fd3c-49a5-a869-4ed8a7eba99d

@@ -66,23 +66,17 @@ param(
 - `= "value"` sets default values if user doesn't specify
 - These allow customization without editing the script
 
-### Configuration Loading
+### Secure Credential Loading
 ```powershell
-$ConfigPath = Join-Path $PSScriptRoot "..\config.ps1"
-if (Test-Path $ConfigPath) {
-    . $ConfigPath
-} else {
-    Write-Error "Configuration file not found: $ConfigPath"
-    exit 1
-}
+$credentials = Get-VeaCredentials
+$ClientId = $credentials.ClientId
+$ClientSecret = $credentials.ClientSecret
 ```
 **Explanation:**
-- `Join-Path` safely combines folder/file paths (like `config.ps1`)
-- `$PSScriptRoot` is the folder where the current script is located
-- `Test-Path` checks if a file exists
-- `. $ConfigPath` loads and runs the config file (imports variables)
-- `Write-Error` displays error messages in red
-- `exit 1` stops the script with error code 1
+- `Get-VeaCredentials` retrieves credentials from secure storage
+- Uses Windows Credential Manager (encrypted) or environment variables
+- Replaces plain text configuration files for better security
+- Returns hashtable with `ClientId` and `ClientSecret` properties
 
 ### Date Format Handling
 ```powershell

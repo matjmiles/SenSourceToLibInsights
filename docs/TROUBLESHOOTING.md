@@ -6,21 +6,22 @@ This guide helps resolve common issues with the VEA to Springshare data pipeline
 
 ### 1. Configuration Issues
 
-#### "Configuration file not found: config.ps1"
-**Cause**: Missing configuration file with API credentials
+#### "No VEA credentials found" 
+**Cause**: Missing API credentials in secure storage
 **Solution**:
-1. Run `setup.bat` to create config.ps1 from template
-2. Or manually copy `config.example.ps1` to `config.ps1`
-3. Edit `config.ps1` with your actual VEA API credentials
+1. Run `setup.bat` to configure credentials interactively
+2. Or use automated setup: `.\scripts\setup-automated.ps1 -ClientId "your-id" -ClientSecret "your-secret"`
+3. Verify credentials are stored: `.\scripts\test-credentials-simple.ps1`
 
-#### "Cannot find config.ps1" when running scripts
-**Cause**: Configuration file not in correct location
+#### "Failed to retrieve VEA credentials"
+**Cause**: Credential storage corruption or access issues
 **Solution**:
 ```powershell
-# Verify config.ps1 exists in project root
-ls config.ps1
-# If not found, create from template
-copy config.example.ps1 config.ps1
+# Test credential retrieval
+.\scripts\test-credentials-simple.ps1
+
+# If failed, reset and reconfigure
+.\scripts\setup-automated.ps1 -ResetCredentials
 ```
 
 ### 2. PowerShell Execution Issues
@@ -48,14 +49,13 @@ powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"
 
 1. **Invalid Credentials**:
    ```powershell
-   # Verify credentials in config.ps1
-   $ClientId = "correct-client-id"
-   $ClientSecret = "correct-client-secret"
+   # Test credential validity
+   .\scripts\test-credentials.ps1
    ```
 
 2. **Expired Credentials**:
    - Contact VEA support to renew API access
-   - Generate new Client ID/Secret if available
+   - Reconfigure with new credentials: `setup.bat`
 
 3. **Network/Proxy Issues**:
    ```powershell

@@ -126,11 +126,10 @@ vea-springshare-api/
 │   ├── VeaCredentialManager.ps1   # Secure credential management
 │   ├── VeaValidator.ps1          # Input validation functions
 │   ├── VeaExceptions.ps1         # Custom exception classes
-│   ├── setup-credentials.ps1     # Secure credential setup
+│   ├── setup-automated.ps1      # Automated credential setup
 │   ├── test-credentials.ps1      # Credential validation test
-│   ├── VEA-Zone-Extractor.ps1    # Data extraction script
-│   ├── VEA-Zone-CSV-Processor.ps1 # CSV processing
-│   └── VEA-Generate-All-Individual-CSVs.ps1 # Batch processor
+│   ├── VEA-Zone-Extractor.ps1    # Main data extraction script
+│   └── VEA-Zone-Extractor-Custom.ps1 # Custom date extraction
 ├── output/                     # Generated data files
 │   ├── csv/                   # Springshare-ready CSV files
 │   └── json/                  # Raw VEA zone data

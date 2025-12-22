@@ -17,19 +17,16 @@ This document explains how each script works in the VEA to Springshare data pipe
 
 **Key Parameters**:
 - `$ClientId` - Your VEA API client ID
-- `$ClientSecret` - Your VEA API client secret  
+- `$ClientSecret` - Your VEA API client secret (retrieved securely)
 
-- `$StartDate` - Data extraction start date (ISO-8601 format)
-- `$EndDate` - Data extraction end date (ISO-8601 format)
+- `$StartDate` - Data extraction start date (auto-calculated or custom)
+- `$EndDate` - Data extraction end date (auto-calculated or custom)
 
-**Configuration**:
-```powershell
-# Edit these variables in the config.ps1 file
-$ClientId = "your-client-id"
-$ClientSecret = "your-client-secret"
-$StartDate = "2025-12-01T00:00:00Z"  # Configured in script
-$EndDate = "2025-12-08T23:59:59Z"    # Configured in script
-```
+**Credential Management**:
+The script automatically retrieves credentials from secure storage:
+- Windows Credential Manager (encrypted storage)
+- Environment variables (for automation)
+- No plain text configuration files needed
 
 **Output Files**:
 - `{SensorName}_zone_data.json` - Raw zone data from VEA API

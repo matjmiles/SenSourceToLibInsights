@@ -1,5 +1,4 @@
 # Ignore sensitive configuration
-config.ps1
 credentials.txt
 .env
 

@@ -4,12 +4,11 @@
 
 ### Main Pipeline Execution
 - **Full pipeline**: `run_export.bat` (runs complete VEA data extraction and CSV conversion)
-- **Setup**: `setup.bat` (creates config.ps1 from template)
+- **Setup**: `setup.bat` (configures secure credentials)
 
 ### PowerShell Script Execution
-- **Individual sensor extraction**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"` (uses automatic date range)
-- **Custom date extraction**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1" -StartDate "2025-12-01T00:00:00Z" -EndDate "2025-12-07T23:59:59Z"`
-- **CSV conversion**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Generate-All-Individual-CSVs.ps1" -GateMethod "Bidirectional"`
+- **Individual sensor extraction**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"` (generates both JSON and CSV files)
+- **Custom date extraction**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor-Custom.ps1"`
 
 ### Credential Management
 - **Interactive setup**: `setup.bat` (prompts for credentials)
@@ -35,11 +34,11 @@
 - **Files**: PascalCase with descriptive names (e.g., `VEA-Zone-Extractor.ps1`)
 - **API endpoints**: Use consistent URL construction with `$ApiBaseUrl`
 - **Output files**: Use `{SensorName}_{type}_data.{ext}` pattern
-- **Configuration**: Centralize in `config.ps1` with clear variable names
+- **Configuration**: Centralize credentials in secure storage with clear variable names
 
 ### Imports and Dependencies
 - **Modules**: No external PowerShell modules required - uses only built-in cmdlets
-- **Configuration**: Load via `. $ConfigPath` pattern in scripts
+- **Configuration**: Load via secure credential manager pattern in scripts
 - **API calls**: Use `Invoke-RestMethod` with consistent header patterns
 
 ### Data Handling
