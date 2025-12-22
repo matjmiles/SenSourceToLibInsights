@@ -72,7 +72,8 @@ foreach ($jsonFile in $ZoneJsonFiles) {
                 # Convert UTC timestamp to local timezone
                 $UtcDateTime = [DateTime]::Parse($record.recordDate_hour_1)
                 $LocalDateTime = $UtcDateTime.ToLocalTime()
-                $HourKey = $LocalDateTime.ToString("yyyy-MM-dd HH:mm")
+                # Use InvariantCulture to ensure consistent yyyy-mm-dd format
+                $HourKey = $LocalDateTime.ToString("yyyy-MM-dd HH:mm", [System.Globalization.CultureInfo]::InvariantCulture)
                 
                 $HourlyData[$HourKey] = @{
                     DateTime = $LocalDateTime
@@ -91,23 +92,25 @@ foreach ($jsonFile in $ZoneJsonFiles) {
         $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
         $CsvFile = "output\csv\${SafeName}_individual_springshare_import.csv"
         
-        $CsvLines = @("date,time,gate_start,gate_end")
+        # Fixed header format - remove separate time column as per Springshare support
+        $CsvLines = @("date,gate_start,gate_end")
         
         foreach ($hourKey in $HourlyData.Keys | Sort-Object) {
             $hourData = $HourlyData[$hourKey]
-            $dateOnly = $hourData.DateTime.ToString("yyyy-MM-dd")
-            $timeOnly = $hourData.DateTime.ToString("HH:mm")
+            # Combined date/time format as required by Springshare: "2025-11-01 07:00"
+            # Use InvariantCulture to ensure consistent yyyy-mm-dd format
+            $dateTime = $hourData.DateTime.ToString("yyyy-MM-dd HH:mm", [System.Globalization.CultureInfo]::InvariantCulture)
             
             switch ($GateMethod.ToLower()) {
                 "bidirectional" {
-                    $CsvLines += "$dateOnly,$timeOnly,$($hourData.Entries),$($hourData.Exits)"
+                    $CsvLines += "$dateTime,$($hourData.Entries),$($hourData.Exits)"
                 }
                 "manual" {
                     $total = $hourData.Entries + $hourData.Exits
-                    $CsvLines += "$dateOnly,$timeOnly,$total,"
+                    $CsvLines += "$dateTime,$total,"
                 }
                 default {
-                    $CsvLines += "$dateOnly,$timeOnly,$($hourData.Entries),$($hourData.Exits)"
+                    $CsvLines += "$dateTime,$($hourData.Entries),$($hourData.Exits)"
                 }
             }
         }

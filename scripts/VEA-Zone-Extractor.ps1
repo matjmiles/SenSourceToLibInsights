@@ -157,7 +157,7 @@ function Get-VEAZones {
 
 # Ensure output directories exist
 function Ensure-OutputDirectories {
-    $outputDirs = @("output", "output\csv", "output\json")
+    $outputDirs = @("output", "output\csv", "output\csv\occupancy", "output\csv\gate_counts", "output\json")
     foreach ($dir in $outputDirs) {
         if (-not (Test-Path $dir)) {
             New-Item -ItemType Directory -Path $dir -Force | Out-Null
@@ -231,7 +231,7 @@ function Create-ZoneSpringshareCSV {
     )
 
     $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
-    $CsvFile = "output\csv\${SafeName}_springshare_import.csv"
+    $CsvFile = "output\csv\occupancy\${SafeName}_springshare_import.csv"
     $JsonFile = "output\json\${SafeName}_zone_data.json"
 
     # Save raw zone data
@@ -251,6 +251,11 @@ function Create-ZoneSpringshareCSV {
     $DailyTotals = @{}
     
     foreach ($record in $ZoneData.results) {
+        # CRITICAL FIX: Only process records for the specific zone we requested
+        if ($record.zoneId -ne $ZoneId) {
+            continue  # Skip records from other zones
+        }
+        
         $DateField = $null
         $DateTime = $null
         
@@ -361,7 +366,10 @@ try {
     Write-Host "Saved zones list to: output\json\vea_zones_list.json" -ForegroundColor Gray
 
 Write-Host ""
-Write-Host "Step 3: Processing each zone" -ForegroundColor Yellow
+Write-Host "Step 3: Creating output directories and processing zones" -ForegroundColor Yellow
+
+# Ensure all output directories exist
+Ensure-OutputDirectories
 
 $ProcessedZones = @()
 $CreatedFiles = @()
