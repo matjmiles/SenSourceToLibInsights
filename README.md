@@ -62,12 +62,19 @@ run_export.bat
 - **✅ No user input required**: Runs hands-free
 
 #### **Custom Date Range (Advanced)**
-For specific date ranges, the scripts now support both automatic and manual dates:
+For specific date ranges, use the custom date script:
+```batch
+run_custom_dates.bat
+```
+This will prompt you to enter custom start/end dates, or use automatic dates.
+
+You can also run scripts directly:
 ```powershell
-# Automatic dates (recommended)
+# Automatic dates (default - full current year)
 .\scripts\VEA-Zone-Extractor.ps1
 
-# Custom date range (optional)
+# Custom dates with interactive prompts
+.\scripts\VEA-Zone-Extractor-Custom.ps1
 .\scripts\VEA-Zone-Extractor.ps1 -StartDate "2025-01-01T00:00:00Z" -EndDate "2025-12-31T23:59:59Z"
 ```
 

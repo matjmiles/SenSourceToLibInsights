@@ -1,6 +1,4 @@
 param(
-    [string]$StartDate,  # Will be auto-calculated if not provided
-    [string]$EndDate,    # Will be auto-calculated if not provided
     [string]$DataType = "traffic",
     [string]$DateGrouping = "hour",
     [string]$GateMethod = "Bidirectional"
@@ -56,19 +54,13 @@ function Get-AutomaticDateRange {
     }
 }
 
-# Calculate automatic dates if not provided
-if (-not $StartDate -or -not $EndDate) {
-    Write-Host "Calculating automatic date range for current year..." -ForegroundColor Cyan
-    $dateRange = Get-AutomaticDateRange
-    if (-not $StartDate) {
-        $StartDate = $dateRange.StartDate
-        Write-Host "Auto Start Date: $StartDate" -ForegroundColor Gray
-    }
-    if (-not $EndDate) {
-        $EndDate = $dateRange.EndDate
-        Write-Host "Auto End Date: $EndDate" -ForegroundColor Gray
-    }
-}
+# Calculate automatic date range for current year
+Write-Host "Calculating automatic date range for current year..." -ForegroundColor Cyan
+$dateRange = Get-AutomaticDateRange
+$StartDate = $dateRange.StartDate
+$EndDate = $dateRange.EndDate
+Write-Host "Auto Start Date: $StartDate" -ForegroundColor Gray
+Write-Host "Auto End Date: $EndDate" -ForegroundColor Gray
 
 # Validate script parameters
 $paramValidation = [VeaValidator]::TestScriptParameters(@{
@@ -232,6 +224,7 @@ function Create-ZoneSpringshareCSV {
 
     $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
     $CsvFile = "output\csv\occupancy\${SafeName}_springshare_import.csv"
+    $GateCountsFile = "output\csv\gate_counts\${SafeName}_gate_counts.csv"
     $JsonFile = "output\json\${SafeName}_zone_data.json"
 
     # Save raw zone data
@@ -247,95 +240,105 @@ function Create-ZoneSpringshareCSV {
     $ZoneDataPackage | ConvertTo-Json -Depth 15 | Out-File -FilePath $JsonFile -Encoding UTF8
     Write-Host "  Saved raw data: $JsonFile" -ForegroundColor Gray
 
-    # Group by date (convert hourly to daily)
-    $DailyTotals = @{}
+    # Create occupancy CSV format (hourly with date/time and gate_start/gate_end)
+    $CsvLines = @("date,gate_start,gate_end")
     
+    # Process hourly records directly (no daily aggregation)
     foreach ($record in $ZoneData.results) {
-        # CRITICAL FIX: Only process records for the specific zone we requested
+        # CRITICAL: Only process records for the specific zone we requested
         if ($record.zoneId -ne $ZoneId) {
             continue  # Skip records from other zones
         }
         
-        $DateField = $null
-        $DateTime = $null
-        
-        # Handle different date field formats
+        # Extract date/time from record
+        $dateTime = $null
         if ($record.recordDate_hour_1) {
-            $DateTime = [DateTime]$record.recordDate_hour_1
+            $dateTime = [DateTime]$record.recordDate_hour_1
         } elseif ($record.recordDate_day_1) {
-            $DateTime = [DateTime]$record.recordDate_day_1
+            $dateTime = [DateTime]$record.recordDate_day_1
         } elseif ($record.recordDate_month_1) {
-            $DateTime = [DateTime]$record.recordDate_month_1
+            $dateTime = [DateTime]$record.recordDate_month_1
         }
         
-        if ($DateTime) {
-            $DateKey = $DateTime.ToString("yyyy-MM-dd")
+        if ($dateTime) {
+            # Use full date/time for hourly records
+            $hourlyDateKey = $dateTime.ToString("yyyy-MM-dd HH:mm")
             
-            if (-not $DailyTotals.ContainsKey($DateKey)) {
-                $DailyTotals[$DateKey] = @{
-                    Entries = 0
-                    Exits = 0
+            # Get entry and exit counts for this hour
+            $entryCount = if ($record.sumins) { [int]$record.sumins } else { 0 }
+            $exitCount = if ($record.sumouts) { [int]$record.sumouts } else { 0 }
+            
+            switch ($GateMethod.ToLower()) {
+                "bidirectional" {
+                    $CsvLines += "$hourlyDateKey,$entryCount,$exitCount"
                 }
-            }
-            
-            # Add entries and exits
-            if ($record.sumins) {
-                $DailyTotals[$DateKey].Entries += [int]$record.sumins
-            }
-            if ($record.sumouts) {
-                $DailyTotals[$DateKey].Exits += [int]$record.sumouts
+                "manual" {
+                    $total = $entryCount + $exitCount
+                    $CsvLines += "$hourlyDateKey,$total,"
+                }
+                default {
+                    $CsvLines += "$hourlyDateKey,$entryCount,$exitCount"
+                }
             }
         }
     }
 
-    if ($DailyTotals.Count -eq 0) {
-        Write-Host "  No valid daily records found" -ForegroundColor Yellow
+    if ($CsvLines.Count -le 1) {
+        Write-Host "  No valid hourly records found" -ForegroundColor Yellow
         return $null
     }
 
-    # Create Springshare CSV format
-    $CsvLines = @("date,gate_start,gate_end")
-    
-    foreach ($date in $DailyTotals.Keys | Sort-Object) {
-        $totals = $DailyTotals[$date]
-        
-        switch ($GateMethod.ToLower()) {
-            "bidirectional" {
-                $CsvLines += "$date,$($totals.Entries),$($totals.Exits)"
-            }
-            "manual" {
-                $total = $totals.Entries + $totals.Exits
-                $CsvLines += "$date,$total,"
-            }
-            default {
-                $CsvLines += "$date,$($totals.Entries),$($totals.Exits)"
-            }
-        }
-    }
-
-    # Save CSV file
+    # Save occupancy CSV file (original format with gate_start and gate_end)
     $CsvContent = $CsvLines -join "`n"
     [System.IO.File]::WriteAllText($CsvFile, $CsvContent, [System.Text.UTF8Encoding]::new($false))
 
-    Write-Host "  Created CSV: $CsvFile" -ForegroundColor Green
+    Write-Host "  Created Occupancy CSV: $CsvFile" -ForegroundColor Green
+
+    # Create gate_counts CSV file (hourly format with date and gate_start)
+    $GateCountsLines = @("date,gate_start")
     
-    # Show summary (with error suppression)
-    try {
-        $TotalEntries = ($DailyTotals.Values | Measure-Object -Property Entries -Sum -ErrorAction SilentlyContinue).Sum
-        $TotalExits = ($DailyTotals.Values | Measure-Object -Property Exits -Sum -ErrorAction SilentlyContinue).Sum
-    } catch {
-        $TotalEntries = "N/A"
-        $TotalExits = "N/A"
-    }
-    
-    if ($GateMethod.ToLower() -ne "manual") {
-        Write-Host "     $($DailyTotals.Count) days | Entries: $TotalEntries | Exits: $TotalExits" -ForegroundColor Gray
-    } else {
-        $TotalCount = $TotalEntries + $TotalExits
-        Write-Host "     $($DailyTotals.Count) days | Total Count: $TotalCount" -ForegroundColor Gray
+    # Process hourly records directly (no daily aggregation for gate_counts)
+    foreach ($record in $ZoneData.results) {
+        # Filter to only this zone's records
+        if ($record.zoneId -ne $ZoneId) {
+            continue
+        }
+        
+        # Extract date/time from record
+        $dateTime = $null
+        if ($record.recordDate_hour_1) {
+            $dateTime = [DateTime]$record.recordDate_hour_1
+        } elseif ($record.recordDate_day_1) {
+            $dateTime = [DateTime]$record.recordDate_day_1
+        } elseif ($record.recordDate_month_1) {
+            $dateTime = [DateTime]$record.recordDate_month_1
+        }
+        
+        if ($dateTime) {
+            # Use full date/time for hourly records
+            $hourlyDateKey = $dateTime.ToString("yyyy-MM-dd HH:mm")
+            
+            # Get entry count for this hour
+            $entryCount = if ($record.sumins) { [int]$record.sumins } else { 0 }
+            
+            $GateCountsLines += "$hourlyDateKey,$entryCount"
+        }
     }
 
-    return $CsvFile
+    # Save gate_counts CSV file
+    $GateCountsContent = $GateCountsLines -join "`n"
+    [System.IO.File]::WriteAllText($GateCountsFile, $GateCountsContent, [System.Text.UTF8Encoding]::new($false))
+
+    Write-Host "  Created Gate Counts CSV: $GateCountsFile" -ForegroundColor Green
+    
+    # Show summary
+    $hourlyRecords = $CsvLines.Count - 1  # Subtract header line
+    Write-Host "     $hourlyRecords hourly records processed" -ForegroundColor Gray
+
+    return @{
+        OccupancyFile = $CsvFile
+        GateCountsFile = $GateCountsFile
+    }
 }
 
 # Main execution with proper error handling
@@ -396,10 +399,13 @@ foreach ($zone in $zones) {
         $zoneData = Get-ZoneTrafficData -AccessToken $accessToken -ZoneId $zone.zoneId -ZoneName $zone.name -StartDate $StartDate -EndDate $EndDate -DateGrouping $DateGrouping
 
         if ($zoneData) {
-            $csvFile = Create-ZoneSpringshareCSV -ZoneData $zoneData -SensorName $sensorName -ZoneId $zone.zoneId -GateMethod $GateMethod
+            $csvResult = Create-ZoneSpringshareCSV -ZoneData $zoneData -SensorName $sensorName -ZoneId $zone.zoneId -GateMethod $GateMethod
 
-            if ($csvFile) {
-                $CreatedFiles += $csvFile
+            if ($csvResult -and $csvResult.OccupancyFile) {
+                $CreatedFiles += $csvResult.OccupancyFile
+                if ($csvResult.GateCountsFile) {
+                    $CreatedFiles += $csvResult.GateCountsFile
+                }
                 $SuccessCount++
             }
 
@@ -409,7 +415,8 @@ foreach ($zone in $zones) {
                 SensorId = $zone.sensorId
                 SensorName = $sensorName
                 Success = $true
-                CsvFile = $csvFile
+                OccupancyFile = $csvResult.OccupancyFile
+                GateCountsFile = $csvResult.GateCountsFile
             }
         } else {
             $ProcessedZones += @{
@@ -456,13 +463,29 @@ Write-Host "Successful extractions: $SuccessCount / $($Zones.Count)" -Foreground
 
 if ($CreatedFiles.Count -gt 0) {
     Write-Host ""
-    Write-Host "Created Springshare Import Files:" -ForegroundColor Cyan
-    foreach ($file in $CreatedFiles) {
-        Write-Host "   $file" -ForegroundColor White
+    Write-Host "Created Files:" -ForegroundColor Cyan
+    
+    # Separate occupancy and gate_counts files
+    $OccupancyFiles = $CreatedFiles | Where-Object { $_ -like "*\occupancy\*" }
+    $GateCountsFiles = $CreatedFiles | Where-Object { $_ -like "*\gate_counts\*" }
+    
+    if ($OccupancyFiles) {
+        Write-Host "   Occupancy Files (date, gate_start, gate_end - HOURLY):" -ForegroundColor Yellow
+        foreach ($file in $OccupancyFiles) {
+            Write-Host "     $file" -ForegroundColor White
+        }
     }
+    
+    if ($GateCountsFiles) {
+        Write-Host "   Gate Counts Files (date, gate_start - HOURLY):" -ForegroundColor Yellow
+        foreach ($file in $GateCountsFiles) {
+            Write-Host "     $file" -ForegroundColor White
+        }
+    }
+    
     Write-Host ""
-    Write-Host "Ready for Springshare LibInsights import!" -ForegroundColor Green
-    Write-Host "Each CSV file contains REAL individual sensor data from VEA zones!" -ForegroundColor Green
+    Write-Host "Ready for analysis and import!" -ForegroundColor Green
+    Write-Host "All files now contain HOURLY data for detailed traffic analysis" -ForegroundColor Gray
 } else {
     Write-Host ""
     Write-Host "WARNING: No sensor data was successfully extracted!" -ForegroundColor Yellow

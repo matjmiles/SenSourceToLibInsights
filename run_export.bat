@@ -31,28 +31,27 @@ if errorlevel 1 (
 )
 
 echo.
-echo Step 2: Converting zone data to individual sensor CSVs...
-echo ---------------------------------------------------------
-powershell -ExecutionPolicy Bypass -File "scripts\VEA-Generate-All-Individual-CSVs.ps1" -GateMethod "Bidirectional"
-
-if errorlevel 1 (
-    echo ERROR: CSV conversion failed
-    echo Please check the zone data files in output\json folder
-    pause
-    exit /b 1
-)
-
+echo Step 2: Data extraction complete - CSV files generated
+echo -------------------------------------------------------
+echo Individual sensor CSV files have been created in both formats:
+echo   - Occupancy files: output\csv\occupancy\ (date, gate_start, gate_end) 
+echo   - Gate counts files: output\csv\gate_counts\ (date, gate_start)
 echo.
 echo ====================================================
 echo EXPORT COMPLETE!
 echo ====================================================
 echo.
-echo Individual sensor CSV files have been created in:
-echo   output\csv\
+echo Individual sensor CSV files have been created in both formats:
+echo   - Occupancy: output\csv\occupancy\ (date, gate_start, gate_end)
+echo   - Gate counts: output\csv\gate_counts\ (date, gate_start)
 echo.
 echo These files are ready for Springshare LibInsights import!
 echo.
 echo Files created:
-powershell -Command "Get-ChildItem 'output\csv\*individual_springshare_import.csv' | Measure-Object | Select-Object -ExpandProperty Count"
+powershell -Command "Get-ChildItem 'output\csv\occupancy\*springshare_import.csv' | Measure-Object | Select-Object -ExpandProperty Count"
+echo occupancy files (date, gate_start, gate_end)
+echo.
+powershell -Command "Get-ChildItem 'output\csv\gate_counts\*gate_counts.csv' | Measure-Object | Select-Object -ExpandProperty Count"
+echo gate counts files (date, gate_start)
 echo.
 pause
