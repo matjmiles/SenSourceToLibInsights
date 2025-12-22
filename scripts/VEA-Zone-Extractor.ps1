@@ -157,6 +157,20 @@ function Ensure-OutputDirectories {
     }
 }
 
+# Map sensor names to new naming convention
+function Get-FriendlyFileName {
+    param([string]$SensorName)
+    
+    switch ($SensorName) {
+        "McKay Library Level 1 Main Entrance 1" { return "West Wing Level 1 East Side" }
+        "McKay Library Level 1 New Entrance" { return "West Wing Level 1 West Side" }
+        "McKay Library Level 2 Stairs" { return "West Wing Level 2 Stairs" }
+        "McKay Library Level 3 Bridge" { return "West Wing Level 3 Bridge" }
+        "McKay Library Level 3 Stairs" { return "West Wing Level 3 Stairs" }
+        default { return ($SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_') }
+    }
+}
+
 # Get traffic data for a specific zone with proper error handling
 function Get-ZoneTrafficData {
     param(
@@ -222,9 +236,10 @@ function Create-ZoneSpringshareCSV {
         [string]$GateMethod
     )
 
+    $FriendlyName = Get-FriendlyFileName -SensorName $SensorName
     $SafeName = $SensorName -replace '[^a-zA-Z0-9\s]', '' -replace '\s+', '_'
-    $CsvFile = "output\csv\occupancy\${SafeName}_springshare_import.csv"
-    $GateCountsFile = "output\csv\gate_counts\${SafeName}_gate_counts.csv"
+    $CsvFile = "output\csv\occupancy\Occupancy ${FriendlyName}.csv"
+    $GateCountsFile = "output\csv\gate_counts\Gate Count ${FriendlyName}.csv"
     $JsonFile = "output\json\${SafeName}_zone_data.json"
 
     # Save raw zone data
