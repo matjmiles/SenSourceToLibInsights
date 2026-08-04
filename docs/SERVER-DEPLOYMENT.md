@@ -11,9 +11,16 @@ Complete guide for deploying the VEA to LibInsights pipeline on a Windows Server
   - `auth.sensourceinc.com` — VEA authentication
   - `vea.sensourceinc.com` — VEA data
   - `byui.libinsight.com` — LibInsights
-- API Credentials:
+- API Credentials (from LastPass — see below):
   - VEA: Client ID (UUID) and Secret
   - LibInsights: Client ID and Secret
+
+### Where to Get the Credentials
+
+Both the VEA and LibInsights credentials are stored in **LastPass**. Retrieve all
+four values from the library's LastPass vault before starting — `setup.bat` will
+prompt for each of them. They are not stored anywhere in this repository, and the
+encrypted files the scripts create cannot be copied between machines (see below).
 
 > **Decide up front which account will run the scheduled task.** Credentials are
 > encrypted per Windows account, so setup must be run as that same account — or
@@ -39,6 +46,8 @@ Or copy the project folder from your development machine.
 
 ## Step 2: Configure All Credentials
 
+Have the **LastPass** entries open before you start — you will need all four values.
+
 Run the setup script to configure **both** VEA and LibInsights credentials:
 
 ```batch
@@ -51,9 +60,20 @@ This will prompt you for:
 3. **LibInsights Client ID**
 4. **LibInsights Client Secret**
 
-Credentials are stored securely:
-- VEA: Windows Credential Manager
-- LibInsights: Encrypted XML file (`scripts/libinsights_credentials.xml`)
+Credentials are then stored securely on this machine:
+- VEA: DPAPI-encrypted file at `%APPDATA%\VEA-API\credentials.xml`
+- LibInsights: DPAPI-encrypted file at `scripts\libinsights_credentials.xml`
+
+Both files are encrypted to the Windows account that created them, so they cannot
+be copied to another machine or reused under a different account. On a new server,
+always re-run `setup.bat` with the values from LastPass rather than copying files
+across.
+
+Verify before moving on:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1"
+```
 
 ---
 
@@ -165,6 +185,9 @@ Get-Content "logs\daily-import-$(Get-Date -Format 'yyyy-MM-dd').log"
 Both credential stores are encrypted with DPAPI, which ties them to the Windows
 account that created them. A credential set saved by an interactive admin will
 **not** decrypt when the task runs as `SYSTEM` or a service account.
+
+Either fix below means re-entering the credentials, so have the **LastPass**
+entries to hand. Copying the encrypted files from a working machine will not work.
 
 Pick one of these:
 
@@ -282,6 +305,9 @@ Credentials live outside the repository (`%APPDATA%` and the gitignored
 
 ## Security
 
+- **System of record**: both credential sets live in **LastPass**. Treat that as
+  the authoritative copy — the files below are per-machine artifacts that can be
+  recreated at any time by re-running `setup.bat`.
 - **VEA credentials**: DPAPI-encrypted at `%APPDATA%\VEA-API\credentials.xml`,
   or machine environment variables for service accounts
 - **LibInsights credentials**: DPAPI-encrypted XML at
