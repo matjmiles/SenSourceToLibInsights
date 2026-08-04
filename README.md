@@ -142,6 +142,9 @@ Re-running an import is safe — the LibInsights API rejects duplicate records.
 
 ## Security
 
+- **System of record**: both credential sets are stored in **LastPass**. Retrieve
+  them from the library's LastPass vault when setting up a machine — `setup.bat`
+  prompts for all four values.
 - **VEA credentials**: encrypted with DPAPI at `%APPDATA%\VEA-API\credentials.xml`
   (falls back to the `VEA_API_CLIENT_ID` / `VEA_API_CLIENT_SECRET` machine
   environment variables for service accounts)
@@ -149,6 +152,8 @@ Re-running an import is safe — the LibInsights API rejects duplicate records.
 - **No plain text secrets** in repository
 
 Both credential files are encrypted to the Windows account that created them and
-cannot be decrypted by a different account. See
+cannot be decrypted by a different account — or copied to another machine. On a
+new server, re-run `setup.bat` with the values from LastPass rather than copying
+the files across. See
 [SERVER-DEPLOYMENT.md](docs/SERVER-DEPLOYMENT.md#credentials-not-found) if the
 scheduled task runs as a different user.

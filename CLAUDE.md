@@ -125,7 +125,9 @@ the LibInsights API returns 400 for them.
 
 ## Credentials
 
-Never write credentials into scripts or docs. Storage:
+Never write credentials into scripts or docs. The authoritative copy of both
+credential sets lives in **LastPass**; everything below is a per-machine artifact
+recreated by `setup.bat`. Storage:
 
 - **VEA** — `$env:APPDATA\VEA-API\credentials.xml`, DPAPI-encrypted via
   `Export-Clixml`. Falls back to machine environment variables
