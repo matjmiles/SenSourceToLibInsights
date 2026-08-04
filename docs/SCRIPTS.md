@@ -1,197 +1,159 @@
 # Scripts Documentation
 
-This document explains how each script works in the VEA to Springshare data pipeline.
+This document explains how each script works in the VEA to LibInsights data pipeline.
+
+## Overview
+
+The pipeline has two layers:
+
+- **Core scripts** do the real work and take explicit parameters:
+  `VEA-Zone-Extractor.ps1` (extract) and `LibInsights-Importer.ps1` (import).
+- **Daily wrappers** add date defaulting and timestamped logging, then call the
+  core scripts: `Daily-VEA-Export.ps1` and `Daily-LibInsights-Import.ps1`.
+
+Production automation uses the daily wrappers via `run_daily_pipeline.bat`.
+Ad-hoc work usually calls the core scripts directly.
+
+---
+
+## Daily Automation Scripts
+
+### 1. Daily-VEA-Export.ps1
+
+**Purpose**: Export a single day's VEA sensor data to CSV, with logging suitable for
+unattended Task Scheduler runs.
+
+**How it Works**:
+1. Resolves the target date (yesterday by default)
+2. Builds a full-day UTC window: `T00:00:00Z` to `T23:59:59Z`
+3. Invokes `VEA-Zone-Extractor.ps1` with that range
+4. Verifies CSV files were produced in both output directories
+5. Writes every step to `logs/daily-export-YYYY-MM-DD.log`
+
+**Parameters**:
+- `-DaysBack <int>` — how many days back to export (default: `1`, i.e. yesterday)
+- `-SpecificDate "yyyy-MM-dd"` — export one exact date; overrides `-DaysBack`
+
+**Usage**:
+```powershell
+.\Daily-VEA-Export.ps1                          # Yesterday
+.\Daily-VEA-Export.ps1 -DaysBack 2              # Two days ago
+.\Daily-VEA-Export.ps1 -SpecificDate "2026-01-15"
+```
+
+**Exit codes**: `0` on success, `1` on invalid date, missing extractor, or
+extraction failure. If no CSVs are found it logs a `WARN` but still exits `0`.
+
+---
+
+### 2. Daily-LibInsights-Import.ps1
+
+**Purpose**: Import the CSVs currently in `output/csv/` into LibInsights, with
+logging suitable for unattended runs.
+
+**How it Works**:
+1. Counts CSV files in `output/csv/gate_counts/` and `output/csv/occupancy/`
+2. Fails fast with exit code `1` if there is nothing to import
+3. Invokes `LibInsights-Importer.ps1` with the matching switches
+4. Writes every step to `logs/daily-import-YYYY-MM-DD.log`
+
+**Parameters**:
+- `-GateCountsOnly` — import only `output/csv/gate_counts/`
+- `-OccupancyOnly` — import only `output/csv/occupancy/`
+- `-DryRun` — preview record counts and a sample record; sends nothing
+
+**Usage**:
+```powershell
+.\Daily-LibInsights-Import.ps1 -DryRun    # Always do this first
+.\Daily-LibInsights-Import.ps1            # Full import
+```
+
+Re-running is safe: the LibInsights API rejects duplicate records.
+
+---
 
 ## Core Scripts
 
-### 1. VEA-Zone-Extractor.ps1
+### 3. VEA-Zone-Extractor.ps1
 
-**Purpose**: Main data extraction script that retrieves VEA sensor data and generates both JSON and CSV files for Springshare import
+**Purpose**: Main data extraction script. Retrieves VEA sensor data and generates
+both JSON backups and LibInsights-ready CSV files.
 
 **How it Works**:
-1. **Authentication**: Uses OAuth 2.0 to get access token from VEA API
-2. **Zone Discovery**: Retrieves list of all zones (sensors) from VEA
-3. **Data Extraction**: For each zone, extracts traffic data using `entityType=zone` parameter
-4. **Date Range**: Uses automatic last 7 days by default (no parameters required)
-5. **CSV Generation**: Automatically creates both gate count and occupancy CSV files with friendly naming
-6. **Output**: Creates both JSON data files and Springshare-ready CSV files
+1. **Module loading**: dot-sources `VeaCredentialManager.ps1`, `VeaValidator.ps1`,
+   and `VeaExceptions.ps1` from the same directory
+2. **Parameter validation**: `[VeaValidator]::TestScriptParameters()` checks the
+   date range and enum-like parameters before any network call
+3. **Credentials**: `Get-VeaCredentials` reads from environment variables first,
+   then the encrypted local store
+4. **Authentication**: OAuth 2.0 client-credentials grant against
+   `https://auth.sensourceinc.com/oauth/token`
+5. **Zone discovery**: `GET /zone` returns every zone; the list is saved to
+   `output/json/vea_zones_list.json`
+6. **Data extraction**: for each zone, `GET /data/traffic?entityType=zone&zoneId=...`
+7. **Zone filtering**: the API returns records for *all* zones regardless of the
+   `zoneId` parameter, so records are filtered client-side on `record.zoneId`
+8. **CSV generation**: writes one gate-count and one occupancy CSV per sensor
 
-**Default Behavior** (No Parameters Required):
-- Automatically extracts current year to date
-- Uses secure credential storage (no manual configuration needed)
-- Generates friendly file names using "West Wing" convention
-- Creates dual CSV formats: gate counts and occupancy data
+**Default Behavior** (no parameters):
+- Extracts **January 1 of the current year through the end of today**, in UTC
+- Retrieves credentials from secure storage — no manual configuration
+- Generates friendly file names using the "West Wing" convention
+- Creates both CSV formats: gate counts and occupancy
 
 **Custom Date Range**:
 ```powershell
-# Extract specific date range
-.\VEA-Zone-Extractor.ps1 -StartDate "2025-10-21T00:00:00Z" -EndDate "2025-12-31T23:59:59Z"
+.\VEA-Zone-Extractor.ps1 -StartDate "2026-01-01T00:00:00Z" -EndDate "2026-01-31T23:59:59Z"
 ```
 
 **Parameters**:
-- `-StartDate`: ISO-8601 format start date (optional, defaults to Jan 1 current year)
-- `-EndDate`: ISO-8601 format end date (optional, defaults to current date)
-- `-DataType`: Data type to extract (default: "traffic")
-- `-DateGrouping`: Grouping interval (default: "hour")
-- `-GateMethod`: Gate counting method (default: "Bidirectional")
+- `-StartDate` — ISO-8601 UTC start (optional; defaults to Jan 1 of the current year)
+- `-EndDate` — ISO-8601 UTC end (optional; defaults to end of today)
+- `-DataType` — data type to extract (default: `traffic`)
+- `-DateGrouping` — grouping interval (default: `hour`)
+- `-GateMethod` — `Bidirectional` (default) or `Manual`
 
-**Credential Management**:
-The script automatically retrieves credentials from secure storage:
-- Windows Credential Manager (encrypted storage)
-- Environment variables (for automation)
-- No plain text configuration files needed
+`-GateMethod Manual` writes `entries + exits` into `gate_start` and leaves
+`gate_end` empty, for LibInsights datasets configured for manual gate counts.
+The gate-count CSV is unaffected by this switch.
 
 **Output Files**:
-- `output/json/{SensorName}_zone_data.json` - Raw zone data from VEA API
-- `output/csv/gate_counts/Gate Count West Wing Level X [Location].csv` - Gate count data
-- `output/csv/occupancy/Occupancy West Wing Level X [Location].csv` - Occupancy data
+- `output/json/{SensorName}_zone_data.json` — raw zone response plus extraction metadata
+- `output/json/vea_zones_list.json` — full zone list from the API
+- `output/csv/gate_counts/Gate Count West Wing Level X [Location].csv`
+- `output/csv/occupancy/Occupancy West Wing Level X [Location].csv`
+
+Each run **overwrites** these files. Import before extracting again.
 
 ---
 
-### 2. VEA-Zone-Extractor-Custom.ps1
+### 4. LibInsights-Importer.ps1
 
-**Purpose**: Interactive script for extracting data with custom date ranges
+**Purpose**: Import VEA gate count and occupancy data from CSV files directly into
+LibInsights via API.
 
 **How it Works**:
-1. **Interactive Prompts**: Asks user for custom start and end dates
-2. **Script Modification**: Temporarily modifies the main extractor script with custom dates
-3. **Execution**: Runs the main extractor with the specified date range
-4. **Restoration**: Restores the original script after execution
+1. **Credentials**: reads `scripts/libinsights_credentials.xml` (encrypted `Clixml`)
+2. **Authentication**: OAuth 2.0 client-credentials grant against
+   `POST /v1.0/oauth/token`, form-encoded
+3. **File discovery**: scans `output/csv/gate_counts/` and `output/csv/occupancy/`
+4. **Gate mapping**: matches each filename against the gate-ID table below
+5. **Batch import**: posts records in batches (default 100) with a 200 ms pause
+   between batches to avoid rate limiting
+6. **Reporting**: prints per-file and grand-total success/failure counts
 
 **Usage**:
 ```powershell
-.\VEA-Zone-Extractor-Custom.ps1
-```
-
-**Features**:
-- Date validation and user-friendly prompts
-- Automatic script backup and restoration
-- Same output format as main extractor script
-- Error handling for invalid date ranges
-
-
-
----
-
-## Data Flow Pipeline
-
-```
-1. VEA-Zone-Extractor.ps1 (Main Script)
-   ↓ Extracts zone data from VEA API (last 7 days by default)
-   ↓ Applies friendly "West Wing" naming convention
-   ↓ Creates: JSON files in output/json/
-   ↓ Creates: CSV files in output/csv/gate_counts/ and output/csv/occupancy/
-
-2. VEA-Zone-Extractor-Custom.ps1 (Optional)
-   ↓ For custom date ranges
-   ↓ Prompts user for dates
-   ↓ Same output as main script
-
-3. Manual Import
-   ↓ Upload CSV files to Springshare LibInsights
-   ↓ Choose either gate_counts or occupancy format as needed
-```
-
-## Technical Details
-
-### VEA API Zone Architecture
-- Each physical sensor corresponds to a logical "zone" in VEA
-- Zone data API endpoint: `/data/traffic?entityType=zone`
-- API returns all zones but records contain `zoneId` for filtering
-- Individual sensor data is achieved through client-side zoneId filtering
-
-### Springshare CSV Format Requirements
-- **Encoding**: UTF-8 without BOM
-- **Delimiter**: Comma (`,`)
-- **Gate Count Format**: `date,gate_start` (for entry/exit counts)
-- **Occupancy Format**: `date,gate_start,gate_end` (for occupancy tracking)
-- **Date Format**: YYYY-MM-DD
-- **Data Type**: Daily aggregated counts
-
-### File Naming Convention
-The scripts automatically apply a friendly naming convention:
-- **Gate Count Files**: `Gate Count West Wing Level X [Location].csv`
-- **Occupancy Files**: `Occupancy West Wing Level X [Location].csv`
-- **JSON Files**: `{OriginalSensorName}_zone_data.json`
-
-**Sensor Mapping**:
-- McKay_Library_Level_1_Main_Entrance_1 → West Wing Level 1 East Side
-- McKay_Library_Level_1_New_Entrance → West Wing Level 1 West Side
-- McKay_Library_Level_2_Stairs → West Wing Level 2 Stairs
-- McKay_Library_Level_3_Bridge → West Wing Level 3 Bridge
-- McKay_Library_Level_3_Stairs → West Wing Level 3 Stairs
-
-### Error Handling
-- OAuth token refresh if expired
-- Network connectivity validation
-- JSON parsing error handling
-- CSV encoding validation
-- File permission checks
-
-## Troubleshooting
-
-### Common Issues
-1. **Authentication Failures**: Check network connectivity and verify credentials with `setup.bat`
-2. **No Zone Data**: Verify that sensors are active in VEA for the specified date range
-3. **Empty CSV Files**: Check date range - ensure data exists for specified dates
-4. **Encoding Issues**: Scripts automatically use UTF-8 without BOM - required for Springshare
-5. **Missing Output Folders**: Scripts automatically create output/json, output/csv/gate_counts, and output/csv/occupancy directories
-
-### Quick Testing
-To verify the system is working:
-1. Run `run_export.bat` for full extraction with default dates
-2. Check `output/csv/gate_counts/` and `output/csv/occupancy/` for generated files
-3. Files should use "West Wing" naming convention with recent timestamps
-
-### Debug Mode
-Add `-Verbose` parameter to any script for detailed logging:
-```powershell
-.\VEA-Zone-Extractor.ps1 -Verbose
-```
-
-### Running Scripts
-- **Default extraction** (recommended): `run_export.bat`
-- **Main script directly**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor.ps1"`
-- **Custom dates**: `powershell -ExecutionPolicy Bypass -File "scripts\VEA-Zone-Extractor-Custom.ps1"`
-- **Setup credentials**: `setup.bat`
-
----
-
-## LibInsights Integration Scripts
-
-### 3. LibInsights-Importer.ps1
-
-**Purpose**: Import VEA gate count and occupancy data from CSV files directly into LibInsights via API
-
-**How it Works**:
-1. **Authentication**: Uses OAuth 2.0 with stored LibInsights credentials
-2. **File Discovery**: Scans output/csv/gate_counts/ and output/csv/occupancy/ directories
-3. **Gate Mapping**: Maps CSV filenames to LibInsights gate_id values
-4. **Batch Import**: Sends records in batches (default 100) to avoid rate limiting
-5. **Error Handling**: Reports success/failure counts per file
-
-**Usage**:
-```powershell
-# Import all data (gate counts + occupancy)
-.\LibInsights-Importer.ps1
-
-# Import only gate counts
-.\LibInsights-Importer.ps1 -GateCountsOnly
-
-# Import only occupancy data
-.\LibInsights-Importer.ps1 -OccupancyOnly
-
-# Preview without importing (dry run)
-.\LibInsights-Importer.ps1 -DryRun
-
-# Test with single record per file
-.\LibInsights-Importer.ps1 -TestSingle
-
-# Custom batch size
-.\LibInsights-Importer.ps1 -BatchSize 50
+.\LibInsights-Importer.ps1                    # Import all data
+.\LibInsights-Importer.ps1 -GateCountsOnly    # Gate counts only
+.\LibInsights-Importer.ps1 -OccupancyOnly     # Occupancy only
+.\LibInsights-Importer.ps1 -DryRun            # Preview without importing
+.\LibInsights-Importer.ps1 -TestSingle        # Send only the first record per file
+.\LibInsights-Importer.ps1 -BatchSize 50      # Smaller batches
 ```
 
 **Gate ID Mapping**:
+
 | CSV Pattern | LibInsights Gate ID | VEA Sensor |
 |-------------|---------------------|------------|
 | West Wing Level 1 East Side | 12 | McKay_Library_Level_1_Main_Entrance_1 |
@@ -200,84 +162,219 @@ Add `-Verbose` parameter to any script for detailed logging:
 | West Wing Level 3 Bridge | 15 | McKay_Library_Level_3_Bridge |
 | West Wing Level 3 Stairs | 16 | McKay_Library_Level_3_Stairs |
 
+A file whose name matches no pattern is skipped with a warning.
+
 **API Details**:
-- **Base URL**: https://byui.libinsight.com/v1.0
-- **Endpoint**: POST /gate-count/{dataset_id}/save
-- **Dataset ID**: 43702 (SenSource Gate Count By Entrance)
-- **Format**: JSON array with gate_id, date, gate_start, gate_end (optional)
+- **Base URL**: `https://byui.libinsight.com/v1.0`
+- **Endpoint**: `POST /gate-count/{dataset_id}/save`
+- **Dataset ID**: `43702` (SenSource Gate Count By Entrance)
+- **Payload**: JSON array of `{ gate_id, date, gate_start, gate_end? }`
+
+> **Note:** Both gate-count and occupancy CSVs are posted to dataset `43702`.
+> Occupancy rows differ only by carrying a `gate_end` value. The scripts also
+> declare `$OccupancyDatasetId = "43600"` (SenSource Occupancy Rates), but it is
+> **not currently used by the importer** — don't assume occupancy lands in 43600.
 
 **Data Handling**:
-- Zero-traffic records (gate_start=0 AND gate_end=0) are automatically skipped for occupancy imports
-- LibInsights API rejects records where both values are zero
-- Duplicate records are rejected by the API (idempotent imports)
+- Zero-traffic rows (`gate_start = 0` **and** `gate_end = 0`) are skipped on
+  occupancy imports; the API returns 400 Bad Request for them. Gate-count imports
+  do not apply this filter, since they have no `gate_end`.
+- Duplicate records are rejected by the API, which makes re-imports effectively
+  idempotent — but they will be counted as failures in the summary.
 
 ---
 
-### 4. LibInsights-API-Explorer.ps1
+## Support Scripts
 
-**Purpose**: Discover and test LibInsights API endpoints, manage credentials
+### 5. LibInsights-API-Explorer.ps1
+
+**Purpose**: Save LibInsights credentials and explore/verify API endpoints.
 
 **Usage**:
 ```powershell
-# Save LibInsights credentials (first-time setup)
-.\LibInsights-API-Explorer.ps1 -SaveCredentials
-
-# Test authentication only
-.\LibInsights-API-Explorer.ps1 -TestOnly
-
-# Full exploration (discover gate IDs, sample data)
-.\LibInsights-API-Explorer.ps1
+.\LibInsights-API-Explorer.ps1 -SaveCredentials   # First-time credential setup
+.\LibInsights-API-Explorer.ps1 -TestOnly          # Test authentication only
+.\LibInsights-API-Explorer.ps1                    # Full exploration
 ```
 
+`setup.bat` writes the same credential file, so you only need `-SaveCredentials`
+if you are reconfiguring LibInsights on its own.
+
 **Output Files**:
-- `output/json/libinsights_gate_count_libraries.json` - Gate configurations
-- `output/json/libinsights_gate_count_overview.json` - Dataset overview
-- `output/json/libinsights_occupancy_fields.json` - Occupancy field definitions
+- `output/json/libinsights_gate_count_libraries.json` — gate configurations
+  (this is where the gate IDs in the table above come from)
+- `output/json/libinsights_gate_count_overview.json` — dataset overview
+- `output/json/libinsights_occupancy_fields.json` — occupancy field definitions
+- `output/json/libinsights_occupancy_sample.json` — sample occupancy records
+
+---
+
+### 6. test-credentials.ps1
+
+**Purpose**: Verify the VEA credential system end to end.
+
+**Usage**:
+```powershell
+.\test-credentials.ps1            # Six checks, pass/fail summary
+.\test-credentials.ps1 -Detailed  # Also prints Client ID and secret length
+```
+
+Checks: credentials exist → can be retrieved → format is valid (UUID client ID,
+secret longer than 20 characters) → live API authentication succeeds → parameter
+validation works → error-handling framework works. Exits `1` on the first failure.
+
+---
+
+### 7. setup-automated.ps1
+
+**Purpose**: Non-interactive VEA credential setup for scripted or remote installs.
+
+**Usage**:
+```powershell
+.\setup-automated.ps1 -ClientId "<uuid>" -ClientSecret "<secret>"
+.\setup-automated.ps1 -UseEnvironmentVariables   # Store as machine env vars instead
+.\setup-automated.ps1 -ResetCredentials          # Clear both stores
+```
+
+`setup.bat` calls this script for the VEA half of setup.
+
+---
+
+### 8. Shared Modules
+
+These are dot-sourced by the scripts above, not run directly.
+
+| File | Provides |
+|------|----------|
+| `VeaCredentialManager.ps1` | `VeaCredentialManager` and `VeaEnvironmentCredentials` classes, `Get-VeaCredentials`, `Initialize-VeaCredentials` |
+| `VeaValidator.ps1` | `VeaValidator` class, `Test-VeaApiCredentials`, `Test-VeaDateRange`, `Test-VeaFilePermissions` |
+| `VeaExceptions.ps1` | `VeaException` hierarchy, `VeaErrorHandler`, `Invoke-VeaSafe`, `Invoke-VeaRetry` |
+
+---
+
+### 9. VEA-Zone-Extractor-Custom.ps1 — deprecated, does not work
+
+This script prompted for dates and then rewrote `VEA-Zone-Extractor.ps1`'s source
+in place to inject them. The regular expression it uses no longer matches the
+extractor's current code, so the substitution silently does nothing and the run
+falls back to the default date range.
+
+The extractor now accepts dates directly, which makes the whole approach obsolete:
+
+```powershell
+.\VEA-Zone-Extractor.ps1 -StartDate "2026-01-01T00:00:00Z" -EndDate "2026-01-31T23:59:59Z"
+```
+
+`run_custom_dates.bat` calls this script and is deprecated for the same reason.
 
 ---
 
 ## Batch Files
 
-### run_full_pipeline.bat
+| File | Purpose |
+|------|---------|
+| `setup.bat` | Interactive credential setup for VEA and LibInsights |
+| `run_daily_pipeline.bat` | **Production.** Runs daily export then daily import; aborts if the export fails. Schedule this. |
+| `run_full_pipeline.bat` | Interactive. Extracts year-to-date, then imports everything. Prompts for confirmation. |
+| `run_export.bat` | Interactive. Extraction only, year-to-date. |
+| `run_import.bat` | Interactive menu: import all / gate counts / occupancy / dry run. |
+| `run_custom_dates.bat` | Deprecated — see section 9. |
 
-**Purpose**: Complete end-to-end automation from VEA extraction to LibInsights import
-
-**Steps**:
-1. Extract VEA sensor data (current year to date)
-2. Generate CSV files for gate counts and occupancy
-3. Import all data into LibInsights
-
-### run_import.bat
-
-**Purpose**: Import existing CSV files to LibInsights without re-extracting from VEA
-
-**Options**:
-1. Import all (gate counts + occupancy)
-2. Import gate counts only
-3. Import occupancy only
-4. Dry run (preview only)
-5. Cancel
+> **Known issue:** the file counts `run_export.bat` prints at the end always read
+> `0`. Its `Get-ChildItem` globs (`*springshare_import.csv`, `*gate_counts.csv`)
+> predate the current file naming convention. Extraction itself is unaffected —
+> check `output/csv/` directly.
 
 ---
 
-## Complete Data Flow Pipeline
+## Data Flow Pipeline
 
-```
-1. VEA-Zone-Extractor.ps1 (or run_export.bat)
-   ↓ Authenticates with VEA API
-   ↓ Extracts zone data (default: last 7 days)
-   ↓ Creates: JSON files in output/json/
-   ↓ Creates: CSV files in output/csv/gate_counts/ and output/csv/occupancy/
+```text
+1. VEA-Zone-Extractor.ps1  (via Daily-VEA-Export.ps1 or run_export.bat)
+   ↓ Authenticates with VEA API (OAuth 2.0)
+   ↓ Lists zones, then queries hourly traffic per zone
+   ↓ Filters records client-side by zoneId
+   ↓ Writes: output/json/*.json  (raw backup)
+   ↓ Writes: output/csv/gate_counts/*.csv and output/csv/occupancy/*.csv
 
-2. LibInsights-Importer.ps1 (or run_import.bat)
-   ↓ Authenticates with LibInsights API
+2. LibInsights-Importer.ps1  (via Daily-LibInsights-Import.ps1 or run_import.bat)
+   ↓ Authenticates with LibInsights API (OAuth 2.0)
    ↓ Reads CSV files from output/csv/
-   ↓ Maps filenames to LibInsights gate_id
-   ↓ POSTs data in batches to LibInsights
+   ↓ Maps each filename to a LibInsights gate_id
+   ↓ POSTs records in batches of 100 to /gate-count/43702/save
    ↓ Reports success/failure counts
 
-3. run_full_pipeline.bat (Combined)
-   ↓ Runs VEA extraction
-   ↓ Runs LibInsights import
-   ↓ Complete automation in one command
+3. run_daily_pipeline.bat  (combined, for Task Scheduler)
+   ↓ Step 1 then step 2, aborting if step 1 fails
+   ↓ Both steps log to logs/
 ```
+
+---
+
+## Technical Details
+
+### VEA API Zone Architecture
+- Each physical sensor corresponds to a logical "zone" in VEA
+- Zone data endpoint: `/data/traffic?entityType=zone&zoneId={id}`
+- **The API returns records for all zones regardless of the `zoneId` parameter.**
+  Per-sensor separation is achieved by client-side filtering on `record.zoneId`.
+  Removing that filter would duplicate every zone's data into every CSV.
+- Hourly records carry `recordDate_hour_1`, `sumins` (entries), and `sumouts` (exits)
+
+### CSV Format Requirements
+- **Encoding**: UTF-8 **without BOM** — written with
+  `[System.IO.File]::WriteAllText(..., [System.Text.UTF8Encoding]::new($false))`.
+  `Out-File -Encoding UTF8` emits a BOM in PowerShell 5.1 and must not be
+  substituted here.
+- **Delimiter**: comma
+- **Granularity**: hourly, one row per sensor per hour
+- **Date format**: `yyyy-MM-dd HH:mm` (e.g. `2026-01-15 08:00`)
+- **Gate Count Format**: `date,gate_start` — `gate_start` is entries
+- **Occupancy Format**: `date,gate_start,gate_end` — entries and exits
+
+Example:
+```csv
+date,gate_start,gate_end
+2026-01-15 08:00,42,38
+2026-01-15 09:00,57,51
+```
+
+### File Naming Convention
+The scripts automatically apply a friendly naming convention:
+- **Gate Count Files**: `Gate Count West Wing Level X [Location].csv`
+- **Occupancy Files**: `Occupancy West Wing Level X [Location].csv`
+- **JSON Files**: `{OriginalSensorName}_zone_data.json` (spaces become underscores)
+
+**Sensor Mapping**:
+- McKay Library Level 1 Main Entrance 1 → West Wing Level 1 East Side
+- McKay Library Level 1 New Entrance → West Wing Level 1 West Side
+- McKay Library Level 2 Stairs → West Wing Level 2 Stairs
+- McKay Library Level 3 Bridge → West Wing Level 3 Bridge
+- McKay Library Level 3 Stairs → West Wing Level 3 Stairs
+
+An unrecognized sensor ID falls back to a sanitized version of its VEA name and
+will be skipped at import time, since no gate ID maps to it.
+
+### Error Handling
+- Custom exception hierarchy in `VeaExceptions.ps1` (`VeaApiException`,
+  `VeaAuthenticationException`, `VeaDataException`, `VeaValidationException`,
+  `VeaConfigurationException`)
+- `Invoke-VeaRetry` wraps transient API calls; `Invoke-VeaSafe` wraps
+  fail-fast operations
+- Per-zone failures are caught and recorded so one bad sensor doesn't abort the run
+- Scripts `exit 1` on fatal errors so batch wrappers can check `%ERRORLEVEL%`
+
+---
+
+## Quick Testing
+
+To verify the system is working end to end:
+
+1. `powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1"`
+2. `powershell -ExecutionPolicy Bypass -File "scripts\Daily-VEA-Export.ps1" -SpecificDate "<a known-busy past date>"`
+3. Check `output/csv/gate_counts/` and `output/csv/occupancy/` for fresh timestamps
+   and non-zero counts
+4. `powershell -ExecutionPolicy Bypass -File "scripts\Daily-LibInsights-Import.ps1" -DryRun`
+5. Only then run the import for real
+
+For problems, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).

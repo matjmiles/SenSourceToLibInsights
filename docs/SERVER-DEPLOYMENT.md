@@ -6,11 +6,19 @@ Complete guide for deploying the VEA to LibInsights pipeline on a Windows Server
 
 - Windows Server 2016+ (or Windows 10/11)
 - PowerShell 5.1 or higher
-- Internet access to VEA API and LibInsights API
 - Administrator access for Task Scheduler
+- Outbound HTTPS (443) to:
+  - `auth.sensourceinc.com` — VEA authentication
+  - `vea.sensourceinc.com` — VEA data
+  - `byui.libinsight.com` — LibInsights
 - API Credentials:
-  - VEA: Client ID and Secret
+  - VEA: Client ID (UUID) and Secret
   - LibInsights: Client ID and Secret
+
+> **Decide up front which account will run the scheduled task.** Credentials are
+> encrypted per Windows account, so setup must be run as that same account — or
+> VEA credentials must be stored as machine environment variables instead. See
+> [Credentials Not Found](#credentials-not-found).
 
 ---
 
@@ -56,15 +64,28 @@ Credentials are stored securely:
 powershell -ExecutionPolicy Bypass -File "scripts\Daily-VEA-Export.ps1"
 ```
 
+Confirm CSVs were written before continuing:
+
+```powershell
+Get-ChildItem "output\csv\gate_counts","output\csv\occupancy" |
+    Select-Object Name, Length, LastWriteTime
+```
+
 ### Test Import (Dry Run)
 ```powershell
 powershell -ExecutionPolicy Bypass -File "scripts\Daily-LibInsights-Import.ps1" -DryRun
 ```
 
+This sends nothing. Check that each file reports a sensible record count and a
+sample payload with the correct `gate_id`.
+
 ### Test Full Pipeline
 ```batch
 run_daily_pipeline.bat
 ```
+
+This one **does** write to LibInsights. Verify the data lands in dataset 43702
+before creating the scheduled task.
 
 ---
 
@@ -140,17 +161,45 @@ Get-Content "logs\daily-import-$(Get-Date -Format 'yyyy-MM-dd').log"
 ## Troubleshooting
 
 ### Credentials Not Found
-- Ensure setup was run by the same user account that runs the task
-- For SYSTEM account, use environment variables:
-  ```powershell
-  [Environment]::SetEnvironmentVariable("VEA_API_CLIENT_ID", "your-id", "Machine")
-  [Environment]::SetEnvironmentVariable("VEA_API_CLIENT_SECRET", "your-secret", "Machine")
-  ```
+
+Both credential stores are encrypted with DPAPI, which ties them to the Windows
+account that created them. A credential set saved by an interactive admin will
+**not** decrypt when the task runs as `SYSTEM` or a service account.
+
+Pick one of these:
+
+**Option A — run the task as the account that ran setup.** Simplest, but the
+password must be maintained in Task Scheduler.
+
+**Option B — use machine environment variables for VEA.** `Get-VeaCredentials`
+checks these before the encrypted file, so they take precedence:
+```powershell
+[Environment]::SetEnvironmentVariable("VEA_API_CLIENT_ID", "your-id", "Machine")
+[Environment]::SetEnvironmentVariable("VEA_API_CLIENT_SECRET", "your-secret", "Machine")
+```
+LibInsights has no environment-variable fallback, so `libinsights_credentials.xml`
+still has to be written by the account that runs the task. Use `psexec -s` or a
+scheduled one-off task to run `setup.bat` as that account.
+
+Verify from the target account:
+```powershell
+powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1"
+```
+
+### Task Runs but Produces No Logs
+
+The `logs/` directory is created on first run. If it stays empty, the batch file
+never executed — check that **Start in** is set to the repository root in the
+task's Action tab. Without it, relative paths resolve against `C:\Windows\System32`.
 
 ### Network Errors
-Check firewall allows outbound HTTPS to:
+Check the firewall allows outbound HTTPS (443) to:
+- `auth.sensourceinc.com`
 - `vea.sensourceinc.com`
 - `byui.libinsight.com`
+
+On Windows Server 2016, TLS 1.0 may be the default and will fail against these
+APIs. Verify TLS 1.2 is enabled system-wide.
 
 ### Manual Recovery
 If a day was missed:
@@ -161,6 +210,14 @@ If a day was missed:
 # Import to LibInsights
 .\scripts\Daily-LibInsights-Import.ps1
 ```
+
+For several missed days, repeat this pair per day. Each export overwrites the CSVs,
+so the import must run before the next export.
+
+Re-importing a date that already loaded is safe — the API rejects duplicates. Those
+rejections are counted as failures in the summary, which is expected in this case.
+
+For anything not covered here, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ---
 
@@ -175,11 +232,63 @@ The `run_daily_pipeline.bat` script:
 
 Schedule it to run after midnight (e.g., 2:00 AM) to ensure yesterday's data is complete.
 
+If the export step fails, the pipeline aborts before importing — it will not push
+partial data.
+
+---
+
+## Ongoing Maintenance
+
+### Log Retention
+
+Logs are written one file per day and are never pruned automatically. Add a monthly
+cleanup task if disk space matters:
+
+```powershell
+Get-ChildItem "C:\Scripts\SenSourceToLibInsights\logs" -Filter "*.log" |
+    Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-90) } |
+    Remove-Item
+```
+
+### Monitoring
+
+A silent failure looks identical to a silent success unless you check. Weekly:
+
+```powershell
+# Any errors or warnings in the last week's logs?
+Get-ChildItem "logs\*.log" |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) } |
+    Select-String -Pattern "\[(ERROR|WARN)\]"
+
+# Did the task actually run last night?
+Get-ScheduledTaskInfo -TaskName "VEA to LibInsights Daily Pipeline" |
+    Select-Object LastRunTime, LastTaskResult, NextRunTime
+```
+
+`LastTaskResult` of `0` means the batch file exited cleanly. It does **not**
+guarantee records were accepted — confirm against the import log.
+
+### Updating the Deployment
+
+```powershell
+cd C:\Scripts\SenSourceToLibInsights
+git pull
+```
+
+Credentials live outside the repository (`%APPDATA%` and the gitignored
+`libinsights_credentials.xml`), so a pull does not disturb them.
+
 ---
 
 ## Security
 
-- **VEA credentials**: Encrypted in Windows Credential Manager
-- **LibInsights credentials**: Encrypted XML file
+- **VEA credentials**: DPAPI-encrypted at `%APPDATA%\VEA-API\credentials.xml`,
+  or machine environment variables for service accounts
+- **LibInsights credentials**: DPAPI-encrypted XML at
+  `scripts\libinsights_credentials.xml` (gitignored)
 - **All API calls**: HTTPS only
 - **No plain text secrets** in repository
+
+Restrict filesystem permissions on the deployment directory to the service account
+and administrators — the encrypted credential file is only as safe as the account
+it is bound to.

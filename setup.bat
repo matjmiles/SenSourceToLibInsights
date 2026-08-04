@@ -31,7 +31,7 @@ REM STEP 1: VEA API Credentials
 REM =============================================================================
 
 echo Testing existing VEA credentials...
-powershell -ExecutionPolicy Bypass -File "scripts\test-credentials-simple.ps1" >nul 2>&1
+powershell -ExecutionPolicy Bypass -File "scripts\test-credentials.ps1" >nul 2>&1
 if %errorlevel% equ 0 (
     echo VEA credentials already configured and working.
     goto :step2_libinsights
