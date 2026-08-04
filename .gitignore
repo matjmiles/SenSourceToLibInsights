@@ -5,8 +5,10 @@ scripts/libinsights_credentials.xml
 scripts/*_credentials.xml
 
 # Ignore output data files (but allow folder structure)
-output/csv/*.csv
-output/json/*.json
+# Use ** so nested output dirs are covered too - a single * does not cross
+# directory separators, so output/csv/*.csv would miss output/csv/gate_counts/
+output/csv/**/*.csv
+output/json/**/*.json
 !output/csv/.gitkeep
 !output/json/.gitkeep
 
